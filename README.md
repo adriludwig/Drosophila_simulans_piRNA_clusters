@@ -1,1 +1,9 @@
-# Drosophila_simulans_piRNAs_clusters
+# Drosophila simulans piRNAs clusters
+Code and materials associated with the manuscript: xxxxxx
+
+## Repository structure
+
+
+## Authors
+
+## Citation
