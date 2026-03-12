@@ -1,4 +1,4 @@
-# Genome assemblies
+# assemblies
 
 This directory contains the final genome assemblies generated for the *Drosophila simulans* lines analysed in this study.
 
