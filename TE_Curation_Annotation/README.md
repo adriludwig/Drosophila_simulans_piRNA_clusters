@@ -1,10 +1,12 @@
 # TE curation and annotation
 
-# 1. *D. simulans* TE library curation
+## Data availability
 
-## **1.1 - Data availability**
+***Drosophila simulans* curated TE library**: The *Drosophila simulans* curated TE library obtained in this work is available at [Manual_Curated_Dsim_TE_lib.fasta](TE_libraries/Manual_Curated_Dsim_TE_lib.fasta)
 
-The *Drosophila simulans* curated TE library obtained in this work is available at [Manual_Curated_Dsim_TE_lib.fasta](TE_libraries/Manual_Curated_Dsim_TE_lib.fasta)
+***Drosophila simulans* strains TE annotation**: the final TE annotation for each strain is available at [TE_annotation](TE_annotation)
+
+# 1 - *D. simulans* TE library curation
 
 ## **1.2 - Pipeline overview**
 
@@ -36,7 +38,7 @@ Additional details on the naming rationale are provided in the file [Manual_cura
 
 # 2 - *D. simulans* strains TE annotation
 
-## **1 .2 - Pipeline overview**
+## **2.1 - Pipeline overview**
 
 ![**Workflow of the TE annotation**](https://www.dropbox.com/scl/fi/sh8umoi05tnx3oyc1ima2/Workflow_TE_annot.png?rlkey=ef7e7cfaka8utx1zfyyx6uhhp&raw=1)
 
@@ -103,3 +105,45 @@ For each sample, the script generates:
 **Intermediate files**
 
 The pipeline also produces multiple intermediate FASTA, BED, BLAST, and RepeatMasker files, as well as the directories `RM\_${sample}_nolow/` and `RM_${sample}_lib_others/`, which are used during TE filtering, validation, and re-annotation.
+
+# 3 - Filtering and standardisation of TE annotations
+
+Because the annotation included the use of a general *Drosophila* TE library from multiple sources, the classification labels are not fully standardised across elements. As a result, different naming conventions appear for the same TE categories(e.g. LINE elements may be annotated either as LINE or as Non-LTR_retrotransposon).
+
+To ensure consistency in the downstream analysis, TE classification names were standardised after annotation. This step was necessary in order to correctly summarise the TE composition by superfamily, since inconsistent labels would otherwise artificially split elements belonging to the same TE group into separate categories.
+
+Moreover, the annotation was manually inspected to remove matches that were unlikely to represent genuine TE sequences. Although some weak matches contribute little to the overall genome coverage, retaining them would artificially introduce additional TE superfamilies into the analysis. Therefore, candidate elements were inspected individually and filtered based on sequence similarity, alignment quality, and biological plausibility.
+
+## 3.1 - TE entries removed from the dataset
+
+The following TE annotations were excluded because they correspond to very short genomic fragments and the sequence similarity is insufficient to confidently classify them as TE remnants:
+
+`Other`,`MINIME_DN`,`RTE-X`,`DNA/Zator`, `L2`, `DNA3-1_DF`,`DNA8-1_DEl`
+
+## 3.2 - Standardisation of TE superfamily names in the final annotation
+
+To ensure consistency across TE classifications, several TE names were standardised:
+
+`DM_Micropia2#LTR#Gypsy` → `DM_Micropia2#LTR/Gypsy`
+
+`DM_HMS-Beagle/LTR/Gypsy` → `DM_HMS-Beagle#LTR/Gypsy`
+
+`Non-LTR_retrotransposon` → `LINE`
+
+`LTR/Gyspy` → `LTR/Gypsy`
+
+`LTR/gypsy` → `LTR/Gypsy`
+
+`RC/Helitron` → `DNA/Helitron`
+
+`DNA/hAT-Ac, DNA/hAT-hobo, DNA/hAT-Pegasus` → `DNA/hAT`
+
+`DNA/TcMar-Tc1, DNA/Tc1-Mariner, DNA/TcMar-Mariner` → `DNA/Tc1`
+
+`LINE_484/Jockey, LINE/LINE` → `LINE/Jockey`
+
+`DNA/MULE-NOF` → `DNA/MuDR`
+
+`DNA/PIF-Harbinger` → `DNA/Harbinger`
+
+`DNA/CMC-Transib` → `DNA/Transib`
