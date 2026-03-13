@@ -1,6 +1,6 @@
 # TE curation and annotation
 
-# *1. D. simulans* TE library curation
+# 1. *D. simulans* TE library curation
 
 ## **1.1 - Data availability**
 
@@ -33,3 +33,78 @@ In a few cases, the same name has been assigned to distinct TEs in different dat
 For consistency, sequential numbering was written without spaces between the TE family name and the number. Subfamilies were indicated using a dash, followed by the suffix \_Ds, and the TE classification was provided after \# according to the standard format (e.g., Gypsy2-2_Ds#LTR/Gypsy).
 
 Additional details on the naming rationale are provided in the file [Manual_curated_Dsim_lib_Info.xlsx](TE_libraries/Manual_curated_Dsim_lib_Info.xlsx)
+
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+# 2 - *D. simulans* strains TE annotation
+
+## **1 .2 - Pipeline overview**
+
+![**Workflow of the TE annotation**](https://www.dropbox.com/scl/fi/sh8umoi05tnx3oyc1ima2/Workflow_TE_annot.png?rlkey=ef7e7cfaka8utx1zfyyx6uhhp&raw=1)
+
+Genome assemblies were initially annotated using RepeatMasker with the curated *D. simulans* TE library. However, this approach revealed two sources of inconsistency in TE annotation. First, some sequences containing low-complexity regions were not effectively masked by RepeatMasker, leading to spurious TE annotations. Second, small genomic regions were sometimes incorrectly annotated as fragments of TE families known to be absent from a given strain (e.g., Spoink in the reference genome). Manual inspection indicated that these regions corresponded to remnants of other TE families that were more accurately classified when using a broader TE library.
+
+To address these issues, we developed a dedicated pipeline that combines [RepeatMasker](https://www.repeatmasker.org/) and [BLAST](https://blast.ncbi.nlm.nih.gov/doc/blast-help/references.html) to enhance the accuracy and reliability of TE annotations. The annotation process is divided into two main modules: first, we use the curated *D. simulans* TE library to annotate the more conserved TE families. In the second module, we employ the combined *Drosophila* TE library to annotate the more divergent TE fragments.
+
+**Module 1:** Genome assemblies were initially annotated using RepeatMasker v4.1.1 with the curated *D. simulans* TE library, employing -div 20 to recover more conserved sequences and -nolow to avoid fragmentation of complete copies. Potential TE fragment sequences were retrieved from the respective genome using getfasta from [BEDtools](https://bedtools.readthedocs.io/en/latest/)v2.30.0 based on the RepeatMasker annotation. To retain only reliable TE fragments, they were further masked for simple repeats and low-complexity regions using RepeatMasker (-noint) and a blastn search was performed against the curated *D. simulans* TE library (-e-value 1e^-10^; -word-size 7; -max_target_seqs 1; -max_hsps 1) eliminating sequences with no significant matches. Finally, potential split fragments were merged using merge from BEDtools v2.30.0 with a window size of 50 (-d 50) and fragments less than 80 bp were excluded. An additional blastn step is performed against the curated library to obtain complete TE classification, generating a high-confidence annotation of *D. simulans* more conserved TEs.
+
+**Module 2:** The annotated TEs from Module 1 were masked in the genome assemblies using bedtools maskfasta. The masked genome was submitted to RepeatMasker (-nolow) to annotate the remaining more divergent TE fragments using the combined TE library. The same steps from Module 1 were performed to obtain a high-confidence annotation of the remaining TE fragments. Finally, the annotations from the two modules were combined.
+
+## 2.2 - Code availability
+
+Main and helper scripts required by this workflow:
+
+-   [te_annotation_general.sh](scripts/te_annotation_general.sh)
+
+-   [rename_headers_numbers.py](scrips/rename_headers_numbers.py)
+
+-   [recode_headers_from_numbers.py](recode_headers_from_numbers.py)
+
+### 2.2.1 Dependencies
+
+The following programs must be installed and available in the system PATH:
+
+-   RepeatMasker
+-   BLAST+
+-   BEDtools
+-   Python3
+
+### 2.2.2 Required inputs
+
+-f: text file with one sample ID per line
+
+-p: directory containing genome assemblies
+
+-g: genome filename suffix
+
+-t: curated D. simulans TE library
+
+-c: combined Drosophila TE library
+
+### 2.2.3 Usage
+
+```{bash eval =FALSE}
+bash te_annotation_general.sh \
+  -f <sample_list.txt> \
+  -p /path/to/genomes \
+  -g _final_assembly.fasta \
+  -t Manual_Curated_Dsim_TE_lib.fasta \
+  -c General_Drosophila_TE_final_lib.fasta
+```
+
+### 2.2.4 Main outputs
+
+For each sample, the script generates:
+
+**Primary output files**
+
+`${sample}_final_TE_annotation.bed`: combined TE annotation from both modules
+
+`${sample}_final_TE_annotation_morestringent.bed`: filtered annotation retaining fragments longer than 79 bp
+
+**Intermediate files**
+
+The pipeline also produces multiple intermediate FASTA, BED, BLAST, and RepeatMasker files, as well as the directories `RM\_${sample}_nolow/` and `RM_${sample}_lib_others/`, which are used during TE filtering, validation, and re-annotation.
