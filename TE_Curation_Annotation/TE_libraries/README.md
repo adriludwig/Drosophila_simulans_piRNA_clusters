@@ -2,7 +2,7 @@
 
 TE libraries used in this work:
 
-## 1 - Manual_Curated_Dsim_TE_lib.fasta
+## 1 - [Manual_Curated_Dsim_TE_lib.fasta](./Manual_Curated_Dsim_TE_lib.fasta)
 
 *Drosophila simulans* curated library obtained in this work. Please
 check **xxxxx** for information on how it was obtained and
@@ -14,7 +14,7 @@ A modified version of the *Drosophila melanogaster* TE library from ([Rech
 et al., 2022](https://www.nature.com/articles/s41467-022-29518-8)).
 Several sequences were edited or deleted. The library was also
 supplemented with 5 additional sequences from Repbase23.11 and the BDGP
-TE library. All changes made are described in **Dmel_MCTE_info.xlsx.**
+TE library. All changes made are described in [Dmel_MCTE_info.xlsx](./Dmel_MCTE_info.xlsx)
 
 ## 3 - DrosREPlibrary_Chakraborty_filtered.fasta
 
