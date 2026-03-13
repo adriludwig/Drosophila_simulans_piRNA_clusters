@@ -7,7 +7,7 @@ IFS=$'\n\t'
 #
 # Performs a two-step annotation of TEs in genome assemblies.
 # First, conserved TE families are annotated using a curated D. simulans TE library.
-# Confirmed TE fragments are then masked and the genome is re-annotated using a
+# Confirmed TE fragments are then masked, and the genome is re-annotated using a
 # broader Drosophila TE library to detect more divergent TE fragments.
 #
 # Dependencies (All tools must be available in the system PATH):
