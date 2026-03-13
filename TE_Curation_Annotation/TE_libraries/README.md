@@ -5,8 +5,8 @@ TE libraries used in this work:
 ## 1 - Manual_Curated_Dsim_TE_lib.fasta
 
 *Drosophila simulans* curated library obtained in this work. Please
-check **xxxxx** for information of how it was obtained and
-**Manual_curated_Dsim_lib_Info.xlsx** for more information.
+check **xxxxx** for information on how it was obtained and
+[Manual_curated_Dsim_lib_Info.xlsx](TE_Curation_Annotation/TE_libraries/Manual_curated_Dsim_lib_Info.xlsx) for more information on how the sequences were named.
 
 ## 2 - Dmel_MCTE_edited.fasta
 
