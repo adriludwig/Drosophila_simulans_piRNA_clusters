@@ -75,9 +75,9 @@ The following programs must be installed and available in the system PATH:
 
 -g: genome filename suffix
 
--t: curated D. simulans TE library
+-t: curated D. simulans TE library [Manual_Curated_Dsim_TE_lib.fasta](Manual_Curated_Dsim_TE_lib.fasta)
 
--c: combined Drosophila TE library
+-c: combined Drosophila TE library [General_Drosophila_TE_final_lib.fasta](General_Drosophila_TE_final_lib.fasta)
 
 ### 2.2.3 Usage
 
