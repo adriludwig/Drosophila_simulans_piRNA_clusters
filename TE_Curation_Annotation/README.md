@@ -34,11 +34,6 @@ For consistency, sequential numbering was written without spaces between the TE 
 
 Additional details on the naming rationale are provided in the file [Manual_curated_Dsim_lib_Info.xlsx](TE_libraries/Manual_curated_Dsim_lib_Info.xlsx)
 
----
-title: "R Notebook"
-output: html_notebook
----
-
 # 2 - *D. simulans* strains TE annotation
 
 ## **1 .2 - Pipeline overview**
