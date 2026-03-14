@@ -56,7 +56,7 @@ Insertion variants were screened from the Sniffles2 VCF files. Insertions with a
 
 -   Structural variant VCF files produced in Step 1: `SV_Sniffles2/sniffles2/*.vcf`
 
--   TE library containing P-element, Shellder and Spoink sequences: `TE_library.fasta`
+-   TE library containing P-element, Shellder and Spoink sequences: `TE_all.fa`
 
 ##### Helper script:
 
