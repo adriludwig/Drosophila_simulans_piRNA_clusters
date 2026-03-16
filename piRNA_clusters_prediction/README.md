@@ -1,6 +1,6 @@
 #  Prediction of piRNA clusters (piCs)
 
-Two approaches were used to predict piRNA clusters: a coverage-based approach and using the proTRAC software.
+Two approaches were used to predict piRNA clusters: a coverage-based approach and the proTRAC approach.
 
 ## 1 - Short reads pre-processing
 
@@ -22,14 +22,14 @@ Finally, we used [samtools](https://github.com/samtools) merge to combine the SA
 Windows of 500 bp were created with bamCoverage v3.5.5 of deepTools ([Ramírez et al., 2014](https://academic.oup.com/nar/article/42/W1/W187/2435511?guestAccessKey=)) to calculate normalised counts (CPM).
 Windows with an expression of at least 8 CPM were filtered and merged if they were located within 10 kb of each other using samtools.
 RPKM values were then calculated for the resulting regions, and those with an RPKM value of at least 25 were selected.
-To analyse the 1U bias, the genomic regions were extracted using bedtools getfasta, and the reads were remapped to these regions with the same parameters.
-The BAM files were subsequently divided into separate files and we used [FastQC](https://github.com/s-andrews/FastQC) v0.12.1 to produce a quality control report for each of them from where the 1U proportion of each region was extracted. Clusters with 1U frequencies above 60% were maintained. Clusters that did not map with TEs were removed.
+To analyse the 1U bias, genomic regions were extracted using bedtools getfasta, and the reads were remapped to these regions with the same parameters.
+The BAM files were subsequently divided into separate files, and we used [FastQC](https://github.com/s-andrews/FastQC) v0.12.1 to produce a quality control report for each of them from which the 1U proportion of each region was extracted. Clusters with 1U frequencies above 60% were maintained. Clusters that did not map with TEs were removed.
 
 ### **2.1 - Step 1**
 
 **Script:** [01_coverage_based_approach.sh](scripts/01_coverage_based_approach.sh)
 
-Mapping reads and getting the coverage, extracting potential piCs (CPM \>8) and estimating percentage of 1U for each potential piC.
+Mapping reads and getting the coverage, extracting potential piCs (CPM \>8) and estimating the percentage of 1U for each potential piC.
 
 ##### Inputs:
 
@@ -43,13 +43,13 @@ Mapping reads and getting the coverage, extracting potential piCs (CPM \>8) and 
 
 - Potential piC regions for each replicate: `*_500bp_8CPM_merge10kb.bed`
 
-- Potential piC regions for each replicate with there percentage of 1U: `all_samples_1U_coverage_based.txt`
+- Potential piC regions for each replicate with their percentage of 1U: [all_samples_1U_coverage_based.txt](results/all_samples_1U_coverage_based.txt)
 
 ### 2.2 - Step 2
 
 **Script:** [02_coverage_based_approach.sh](scripts/02_coverage_based_approach.sh)
 
-For each sample, it computes total mapped reads, raw coverage, RPM, and RPKM, writes one per-sample table, and then concatenates all per-sample results into one combined file.
+For each sample, it computes total mapped reads, raw coverage, RPM, and RPKM, writes a per-sample table, and then concatenates all per-sample results into a single combined file.
 
 ##### Input:
 
@@ -59,7 +59,7 @@ For each sample, it computes total mapped reads, raw coverage, RPM, and RPKM, wr
 
 ##### **Output:** 
 
-- Potential piC regions for each replicate with coverage measures: `all_samples_CPM8_coverage_based.bed`
+- Potential piC regions for each replicate with coverage measures: [all_samples_CPM8_coverage_based.bed](results/all_samples_CPM8_coverage_based.bed)
 
 ### 2.3 - Step 3
 
@@ -70,10 +70,10 @@ This R script performs the filtering and final selection of candidate piRNA clus
 
 ##### Inputs:
 
-- Table produced in Step 2 containing coverage and normalized expression values (RPM and RPKM) for candidate regions: `all_samples_CPM8_coverage_based.bed`
+- Table produced in Step 2 containing coverage and normalised expression values (RPM and RPKM) for candidate regions: `all_samples_CPM8_coverage_based.bed`
 
 - Table produced in Step 1 containing the proportion of reads with a 1U bias for each candidate region: `all_samples_1U_coverage_based.txt`
 
 ##### Output:
 
-- Summary of all predicted piCs predicted by strain using coverage-based approach, after filtering: `piCs_coverage_based.txt`
+- Summary of all predicted piCs predicted by strain using coverage-based approach, after filtering: [piCs_coverage_based.txt](results/piCs_coverage_based.txt)
