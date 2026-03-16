@@ -4,7 +4,12 @@
 
 ***Drosophila simulans* curated TE library**: The *Drosophila simulans* curated TE library obtained in this work is available at [Manual_Curated_Dsim_TE_lib.fasta](TE_libraries/Manual_Curated_Dsim_TE_lib.fasta)
 
-***Drosophila simulans* strains TE annotation**: the final TE annotation for each strain is available at [TE_annotation](TE_annotation)
+***Drosophila simulans* strains TE annotation**: 
+The final TE annotation for each strain is available at [TE_annotation](TE_annotation)
+
+A bed-like file with the TE annotation for all strains is here: [all_samples_TE_annot_filtered.bed](TE_annotation/all_samples_TE_annot_filtered.bed), where the last columns are strain and size.
+
+The annotation obtained for each strain before the final filtering is available at [before_filtering](./before_filtering)
 
 # 1 - *D. simulans* TE library curation
 
@@ -147,3 +152,5 @@ To ensure consistency across TE classifications, several TE names were standardi
 `DNA/PIF-Harbinger` → `DNA/Harbinger`
 
 `DNA/CMC-Transib` → `DNA/Transib`
+
+
