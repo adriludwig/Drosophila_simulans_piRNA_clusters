@@ -78,3 +78,71 @@ This R script performs the filtering and final selection of candidate piRNA clus
 ##### Output:
 
 - Summary of all predicted piCs predicted by strain using coverage-based approach, after filtering: [piCs_coverage_based.txt](results/piCs_coverage_based.txt)
+
+## 3 - **proTRAC protocol**
+
+Filtered reads from each sample were mapped to their respective genome assemblies, allowing multi-mapping with [Bowtie](https://github.com/BenLangmead/bowtie) v1.3.1 (bowtie -n 1 -l 12 -a --best --strata -y --chunkmbs 1024 -S).
+Next, proTRAC_2.4.3 [(Rosenkranz & Zischler, 2012)](https://pmc.ncbi.nlm.nih.gov/articles/PMC3293768/) was run on sam files (-swsize 500 -swinger 100 -size 500 -1Tor10A 0.6 -min 23 -chitin 10 -pens 0.05 -pti).
+Clusters that did not map with TEs were removed.
+
+### 3.1 - Step 1
+
+Mapping filtered reads against the respective genome assemblies and running proTRAC.
+
+**Script:** [01_protrac_approach.sh](script/01_protrac_approach.sh)
+
+##### Inputs:
+
+-   Deduplicated small RNA FASTQ files for all replicates of each strain: `*_dedup.fastq`
+-   Strain-specific genome assemblies: `*_final_assembly.fasta`
+
+##### **Main Outputs:**
+
+-   SAM files for each replicate containing multiple mapping small RNAs: `*_Protrac.sam`
+
+-   proTRAC output directories containing predicted piRNA clusters and associated statistics: `proTRAC_*`
+
+### 3.2 Step2
+
+Parsing results and getting RPKM
+
+**Script:** [02_protrac_approach.sh](scrips/02_protrac_approach.sh)
+
+##### Inputs:
+
+-   proTRAC cluster predictions generated in Step 1: `proTRAC_*/clusters.gtf`
+
+-   SAM files generated in Step 1: `*_Protrac.sam`
+
+##### **Outputs:**
+
+-   parsed proTRAC result for each strain: `*_parsed_clusters_simple.txt`
+
+-   proTRAC final result from each strain obtained with the command below: [all_samples_protrac_clusters.txt](results/all_samples_protrac_clusters.txt)
+
+    ```{bash eval = FALSE}
+    first=1
+    for file in *_parsed_clusters_simple.txt; do
+        sample=$(basename "$file" _parsed_clusters_simple.txt)
+        if [[ $first -eq 1 ]]; then
+            awk -v sample="$sample" 'BEGIN {OFS="\t"} NR==1 {print $0, "Sample"} NR>1 {print $0, sample}' "$file"
+            first=0
+        else
+            awk -v sample="$sample" 'BEGIN {OFS="\t"} NR>1 {print $0, sample}' "$file"
+        fi
+    done > all_samples_protrac_clusters.txt
+    ```
+
+    ### 3.3 Step 3
+
+Merging piCs and eliminating those that do not intersect with TEs
+
+##### Input: 
+
+-   proTRAC final result: `all_samples_protrac_clusters.txt`
+
+-   TE annotation: `all_samples_TE_annot_filtered.bed`
+
+##### **Output**:
+
+Summary of all piCs predicted by strain using proTRAC approach: [piCs_protrac.txt](results/piCs_protrac.txt)
