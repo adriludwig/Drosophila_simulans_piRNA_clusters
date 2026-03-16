@@ -73,6 +73,7 @@ This R script performs the filtering and final selection of candidate piRNA clus
 - Table produced in Step 2 containing coverage and normalised expression values (RPM and RPKM) for candidate regions: `all_samples_CPM8_coverage_based.bed`
 
 - Table produced in Step 1 containing the proportion of reads with a 1U bias for each candidate region: `all_samples_1U_coverage_based.txt`
+- TE annotation:  `all_samples_TE_annot_filtered.bed`
 
 ##### Output:
 
