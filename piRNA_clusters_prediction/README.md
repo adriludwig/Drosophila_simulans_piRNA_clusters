@@ -63,7 +63,7 @@ For each sample, it computes total mapped reads, raw coverage, RPM, and RPKM, wr
 
 ### 2.3 - Step 3
 
-### **Script:** [03_coverage_based_approach_filtering_pics.r](scripts/03_coverage_based_approach_filtering_pics.r)
+**Script:** [03_coverage_based_approach_filtering_pics.r](scripts/03_coverage_based_approach_filtering_pics.r)
 
 This R script performs the filtering and final selection of candidate piRNA clusters based on the coverage metrics and sequence composition calculated in the previous steps.
 \>60%1U, \>25 RPKM, \>2kb
