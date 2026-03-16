@@ -27,7 +27,7 @@ The BAM files were subsequently divided into separate files, and we used [FastQC
 
 ### **2.1 - Step 1**
 
-**Script:** [01_coverage_based_approach.sh](scripts/01_coverage_based_approach.sh)
+**Script:** [2.1_coverage_based_approach.sh](scripts/2.1_coverage_based_approach.sh)
 
 Mapping reads and getting the coverage, extracting potential piCs (CPM \>8) and estimating the percentage of 1U for each potential piC.
 
@@ -47,7 +47,7 @@ Mapping reads and getting the coverage, extracting potential piCs (CPM \>8) and 
 
 ### 2.2 - Step 2
 
-**Script:** [02_coverage_based_approach.sh](scripts/02_coverage_based_approach.sh)
+**Script:** [2.2_coverage_based_approach.sh](scripts/2.2_coverage_based_approach.sh)
 
 For each sample, it computes total mapped reads, raw coverage, RPM, and RPKM, writes a per-sample table, and then concatenates all per-sample results into a single combined file.
 
@@ -55,7 +55,7 @@ For each sample, it computes total mapped reads, raw coverage, RPM, and RPKM, wr
 
 - Final BAM generated in Step 1: `*_combined_unique_sorted2.bam`
 
-- BED file generated in Step 1 : `*_500bp_8CPM_merge10kb.bed`
+- BED file generated in Step 1: `*_500bp_8CPM_merge10kb.bed`
 
 ##### **Output:** 
 
@@ -63,7 +63,7 @@ For each sample, it computes total mapped reads, raw coverage, RPM, and RPKM, wr
 
 ### 2.3 - Step 3
 
-**Script:** [03_coverage_based_approach_filtering_pics.r](scripts/03_coverage_based_approach_filtering_pics.r)
+**Script:** [2.3_coverage_based_approach_filtering_pics.r](scripts/2.3_coverage_based_approach_filtering_pics.r)
 
 This R script performs the filtering and final selection of candidate piRNA clusters based on the coverage metrics and sequence composition calculated in the previous steps.
 \>60%1U, \>25 RPKM, \>2kb
@@ -89,11 +89,12 @@ Clusters that did not map with TEs were removed.
 
 Mapping filtered reads against the respective genome assemblies and running proTRAC.
 
-**Script:** [01_protrac_approach.sh](script/01_protrac_approach.sh)
+**Script:** [3.1_protrac_approach.sh](script/3.1_protrac_approach.sh)
 
 ##### Inputs:
 
 -   Deduplicated small RNA FASTQ files for all replicates of each strain: `*_dedup.fastq`
+-   
 -   Strain-specific genome assemblies: `*_final_assembly.fasta`
 
 ##### **Main Outputs:**
@@ -106,7 +107,7 @@ Mapping filtered reads against the respective genome assemblies and running proT
 
 Parsing results and getting RPKM
 
-**Script:** [02_protrac_approach.sh](scrips/02_protrac_approach.sh)
+**Script:** [3.2_protrac_approach.sh](scrips/3.2_protrac_approach.sh)
 
 ##### Inputs:
 
@@ -137,6 +138,7 @@ Parsing results and getting RPKM
 
 Merging piCs and eliminating those that do not intersect with TEs
 
+**Script:** [3.3_proTRAC_approach.r](scripts/3.3_proTRAC_approach.r)
 ##### Input: 
 
 -   proTRAC final result: `all_samples_protrac_clusters.txt`
