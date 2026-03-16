@@ -9,7 +9,7 @@ The final TE annotation for each strain is available at [TE_annotation](TE_annot
 
 A bed-like file with the TE annotation for all strains is here: [all_samples_TE_annot_filtered.bed](TE_annotation/all_samples_TE_annot_filtered.bed), where the last columns are strain and size.
 
-The annotation obtained for each strain before the final filtering is available at [before_filtering](./before_filtering)
+The annotation obtained for each strain before the final filtering is available at [before_filtering](./TE_annotation/before_filtering)
 
 # 1 - *D. simulans* TE library curation
 
