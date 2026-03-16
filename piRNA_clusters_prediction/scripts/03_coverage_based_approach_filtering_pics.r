@@ -64,6 +64,12 @@ merged_data<-merged_data%>%
     Sample = gsub("\\bMSC\\.01\\b", "MSC01", Sample)         
   )
 
+
+# Removing replicates flagged during quality control
+# Replicates removed: SGA12-1, SGA12-2, SGA12-3, SGA34-1, SGA34-2
+merged_data<-merged_data%>%
+  filter (!Sample %in% c("SGA12-1","SGA12-2","SGA12-3","SGA34-1","SGA34-2"))
+
 # Filtering by RPKM and U1percentage
 #Filter by RPKM 
 restrictive_RPKM25<-merged_data%>%
