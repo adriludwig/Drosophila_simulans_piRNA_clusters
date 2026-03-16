@@ -1,1 +1,1 @@
-
+This directory contains the main intermediate and final results from the piRNA clusters prediction steps. For details of each file, please see the main [README](https://github.com/adriludwig/Drosophila_simulans_piRNA_clusters/tree/main/piRNA_clusters_prediction)
