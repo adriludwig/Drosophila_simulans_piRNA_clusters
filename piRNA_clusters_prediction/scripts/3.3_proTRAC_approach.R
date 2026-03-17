@@ -12,11 +12,6 @@
 # 3- Intersects candidate clusters with TE annotations.
 # 4 - Retains only clusters overlapping with TEs and produces the final piC annotation table.
 
-# 4 - Filters clusters by minimum size ≥ 2 kb).
-# 5 - Generates a standardized table of filtered piRNA cluster coordinates and associated metrics.
-# 5- Intersects candidate clusters with TE annotations.
-# 6 - Retains only clusters overlapping with TEs and produces the final piC annotation table.
-
 # Load libraries
 library(ggplot2)
 library(tidyverse)
