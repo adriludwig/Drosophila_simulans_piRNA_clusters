@@ -148,3 +148,101 @@ Merging piCs and eliminating those that do not intersect with TEs
 ##### **Output**:
 
 Summary of all piCs predicted by strain using proTRAC approach: [piCs_protrac.txt](results/piCs_protrac.txt)
+
+# 4 - Merge coverage-based and proTRAC piC annotations within strains
+
+Summary: Predicted piRNA clusters from both approaches were combined and merged using bedtools.
+Clusters intersecting with genes were split to eliminate gene regions.
+Clusters with a size less than 2kb were removed.
+More details are described below.
+
+### 4.1 Concatenating results and splitting by strain
+
+The files `piCs_coverage_based.txt` and `piCs_protrac.txt` were obtained previously.
+
+```{bash eval = FALSE}
+cat piCs_coverage_based.txt piCs_protrac.txt |sort -k1,1V -k2,2n >piCs_coverage_protrac.bed
+awk -F'\t' '{ out="./piCs_per_strain/" $4 "_coverage_protrac.bed"; print > out }' piCs_coverage_protrac.bed
+```
+
+### 4.2 Merging coverage-based and proTRAC results per strain
+
+```{bash eval = FALSE}
+cd ./tables/piCs_per_strain
+for file in *_coverage_protrac.bed; do
+    strain="${file%%_coverage_protrac.bed}"
+    out="${strain}_coverage_protrac_merged.bed"
+	  bedtools merge -i $file -c 4,5,6,7 -o distinct,collapse,collapse,collapse >$out
+done
+```
+
+### 4.3 Eliminating gene regions from piC annotation
+
+Genic regions are frequently eliminated from piC annotations.
+For this purpose, we first prepared a filtered reference gene annotation and lifted the coordinates to each strain genome assembly, and later, we transferred the coordinates.
+
+#### 4.3.1 Eliminating lncRNAs and TEs from REF GFF
+
+The *D. simulans* reference annotation ([GCF_016746395.2_Prin_Dsim_3.1_genomic.gff](https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/016/746/395/GCF_016746395.2_Prin_Dsim_3.1/)) was downloaded from NCBI.
+Because some lncRNAs may correspond to piCs, and some TEs are annotated as genes, we filter them out of the reference annotation.
+lncRNAs were removed by string searching, and TEs were removed after blasting against exons.
+AGAT was used to filter the GFF.
+
+**Script:** [4.3.1_filtering_REF_GFF.sh](scripts/4.3.1_filtering_REF_GFF.sh)
+
+##### Inputs:
+
+-   Reference genome: `GCF_016746395.2_Prin_Dsim_3.1_genomic.fna`
+
+-   Reference gene annotation: `GCF_016746395.2_Prin_Dsim_3.1_genomic.gff`
+
+-   TE library: `Manual_Curated_Dsim_TE_lib.fasta`
+
+##### **Output:**
+
+-   Filtered GFF for the reference: `GCF_filtered_no_lncRNA_noTE.gff`
+
+### 4.3.2 Liftoff gene annotation
+
+This script projects the filtered reference gene annotation to each strain genome assembly using [Liftoff](https://github.com/agshumate/Liftoff).\
+**Script:** [4.3.2_liftoff_REF_GFF.sh](scripts/4.3.2_liftoff_REF_GFF.sh)
+
+##### Inputs:
+
+-   Reference genome: `GCF_016746395.2_Prin_Dsim_3.1_genomic.fna`
+
+-   Filtered reference annotation: `GCF_filtered_no_lncRNA_noTE.gff`
+
+-   Genome assemblies: `*_final_assembly.fasta`
+
+##### **Output:**
+
+-   Lifted gene annotations: `*`\_final_assembly_liftoff_noTE_nolncRNA.gff.bed
+
+
+### 4.3.3 Splitting piCs based on the coordinates of the genes
+
+**Script**: [4.3.3_spliting_pics_intersecting_genes.sh](scripts/4.3.3_spliting_pics_intersecting_genes.sh)
+
+##### Inputs:
+
+-   Predicted piRNA clusters:`*_coverage_protrac_merged.bed`
+
+-   Gene annotations generated in the previous step (transformed to bed using [gff_to_bed.py](scripts/gff_to_bed.py): `*_final_assembly_liftoff_noTE_nolncRNA.gff.bed`
+
+-   TE annotations:`*_final_TE_annotation_morestringent.bed`
+
+##### Output:
+
+-   piRNA cluster annotation: `*_pic_outside_gene_2kb_final.bed`
+
+### 4.3.4 Getting final standardised piC results - before liftover
+
+##### Input: 
+
+- piRNA cluster annotation: `pic_outside_gene_2kb_final_all.bed`
+
+##### Output:
+
+- Final piC annotation per strain before liftover: [summary_piCs_before_liftover.tsv](results/summary_piCs_before_liftover.tsv)
+
