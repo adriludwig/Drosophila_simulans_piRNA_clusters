@@ -1,1 +1,1 @@
-
+This directory contains the main scripts used in this work to predict and annotate the piRNA clusters. For more details of each script, please see the main [README](https://github.com/adriludwig/Drosophila_simulans_piRNA_clusters/blob/main/piRNA_clusters_prediction/README.md) on this topic. 
