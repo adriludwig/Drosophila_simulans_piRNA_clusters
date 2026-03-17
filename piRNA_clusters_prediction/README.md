@@ -7,7 +7,7 @@ Two approaches were used to predict piRNA clusters: a coverage-based approach an
 1. [Short reads pre-processing](#1---short-reads-pre-processing)  
 2. [Coverage-based protocol](#2---coverage-based-protocol)  
 3. [proTRAC protocol](#3---protrac-protocol)  
-4. [Merge coverage-based and proTRAC piC annotations within strains](#4---merge-coverage-based-and-proTRAC-piC-annotations-within-strains)  
+4. [Merge coverage-based and proTRAC piC annotations within strains](#4---merge-coverage-based-and-protrac-pic-annotations-within-strains)  
 
 
 ## 1 - Short reads pre-processing
@@ -35,9 +35,11 @@ The BAM files were subsequently divided into separate files, and we used [FastQC
 
 ### **2.1 - Step 1**
 
+Mapping reads and getting the coverage, extracting potential piCs (CPM \>8) and estimating the percentage of 1U for each potential piC.
+
+
 **Script:** [2.1_coverage_based_approach.sh](scripts/2.1_coverage_based_approach.sh)
 
-Mapping reads and getting the coverage, extracting potential piCs (CPM \>8) and estimating the percentage of 1U for each potential piC.
 
 ##### Inputs:
 
@@ -113,7 +115,7 @@ Mapping filtered reads against the respective genome assemblies and running proT
 
 -   proTRAC output directories containing predicted piRNA clusters and associated statistics: `proTRAC_*`
 
-### 3.2 Step2
+### 3.2 - Step 2
 
 Parsing results and getting RPKM
 
@@ -144,7 +146,7 @@ Parsing results and getting RPKM
     done > all_samples_protrac_clusters.txt
     ```
 
-    ### 3.3 Step 3
+    ### 3.3 - Step 3
 
 Merging piCs and eliminating those that do not intersect with TEs
 
@@ -168,7 +170,7 @@ Clusters intersecting with genes were split to eliminate gene regions.
 Clusters with a size less than 2kb were removed.
 More details are described below.
 
-### 4.1 Concatenating results and splitting by strain
+### 4.1 - Concatenating results and splitting by strain
 
 The files `piCs_coverage_based.txt` and `piCs_protrac.txt` were obtained previously.
 
@@ -177,7 +179,7 @@ cat piCs_coverage_based.txt piCs_protrac.txt |sort -k1,1V -k2,2n >piCs_coverage_
 awk -F'\t' '{ out="./piCs_per_strain/" $4 "_coverage_protrac.bed"; print > out }' piCs_coverage_protrac.bed
 ```
 
-### 4.2 Merging coverage-based and proTRAC results per strain
+### 4.2 - Merging coverage-based and proTRAC results per strain
 
 ```{bash eval = FALSE}
 cd ./tables/piCs_per_strain
@@ -188,12 +190,12 @@ for file in *_coverage_protrac.bed; do
 done
 ```
 
-### 4.3 Eliminating gene regions from piC annotation
+### 4.3 - Eliminating gene regions from piC annotation
 
 Genic regions are frequently eliminated from piC annotations.
 For this purpose, we first prepared a filtered reference gene annotation and lifted the coordinates to each strain genome assembly, and later, we transferred the coordinates.
 
-#### 4.3.1 Eliminating lncRNAs and TEs from REF GFF
+#### 4.3.1 - Eliminating lncRNAs and TEs from REF GFF
 
 The *D. simulans* reference annotation ([GCF_016746395.2_Prin_Dsim_3.1_genomic.gff](https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/016/746/395/GCF_016746395.2_Prin_Dsim_3.1/)) was downloaded from NCBI.
 Because some lncRNAs may correspond to piCs, and some TEs are annotated as genes, we filter them out of the reference annotation.
@@ -214,7 +216,7 @@ AGAT was used to filter the GFF.
 
 -   Filtered GFF for the reference: `GCF_filtered_no_lncRNA_noTE.gff`
 
-### 4.3.2 Liftoff gene annotation
+### 4.3.2 - Liftoff gene annotation
 
 This script projects the filtered reference gene annotation to each strain genome assembly using [Liftoff](https://github.com/agshumate/Liftoff).\
 **Script:** [4.3.2_liftoff_REF_GFF.sh](scripts/4.3.2_liftoff_REF_GFF.sh)
@@ -232,7 +234,7 @@ This script projects the filtered reference gene annotation to each strain genom
 -   Lifted gene annotations: `*`\_final_assembly_liftoff_noTE_nolncRNA.gff.bed
 
 
-### 4.3.3 Splitting piCs based on the coordinates of the genes
+### 4.3.3 - Splitting piCs based on the coordinates of the genes
 
 **Script**: [4.3.3_spliting_pics_intersecting_genes.sh](scripts/4.3.3_spliting_pics_intersecting_genes.sh)
 
@@ -248,7 +250,7 @@ This script projects the filtered reference gene annotation to each strain genom
 
 -   piRNA cluster annotation: `*_pic_outside_gene_2kb_final.bed`
 
-### 4.3.4 Getting final standardised piC results - before liftover
+### 4.3.4 - Getting final standardised piC results - before liftover
 
 ##### Input: 
 
