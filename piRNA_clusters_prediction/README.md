@@ -2,6 +2,14 @@
 
 Two approaches were used to predict piRNA clusters: a coverage-based approach and the proTRAC approach.
 
+## Table of Contents
+
+1. [Short reads pre-processing](#short-reads-pre-processing)  
+2. [Coverage-based protocol](#coverage-based-protocol)  
+3. [proTRAC protocol](#protrac-protocol)  
+4. [Merge coverage-based and proTRAC piC annotations within strains](#merge-coverage-based-and-proTRAC-piC-annotations-within-strains)  
+
+
 ## 1 - Short reads pre-processing
 
 Short reads were trimmed with Cutadapt v1.2.1 [(Martin, 2011)](https://journal.embnet.org/index.php/embnetjournal/article/view/200) to remove adapters and select reads of 23-29 nucleotides.
