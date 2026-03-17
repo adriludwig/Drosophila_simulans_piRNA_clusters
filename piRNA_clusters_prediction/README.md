@@ -492,7 +492,7 @@ done
 
 #### Merging up and down alignments of flanking regions to get the transferred coordinates
 
-**Script**: [5.2.3_merging_up_and_down_flanking_lifted.py](5.2.3_merging_up_and_down_flanking_lifted.py)
+**Script**: [5.2.3_merging_up_and_down_flanking_lifted.py](scripts/5.2.3_merging_up_and_down_flanking_lifted.py)
 
 ##### Main output: 
 
