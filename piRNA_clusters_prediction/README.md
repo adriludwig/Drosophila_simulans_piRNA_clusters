@@ -5,9 +5,9 @@ Two approaches were used to predict piRNA clusters: a coverage-based approach an
 ## Table of Contents
 
 1. [Short reads pre-processing](#1---short-reads-pre-processing)  
-2. [Coverage-based protocol](#coverage-based-protocol)  
-3. [proTRAC protocol](#protrac-protocol)  
-4. [Merge coverage-based and proTRAC piC annotations within strains](#merge-coverage-based-and-proTRAC-piC-annotations-within-strains)  
+2. [Coverage-based protocol](#2---coverage-based-protocol)  
+3. [proTRAC protocol](#3---protrac-protocol)  
+4. [Merge coverage-based and proTRAC piC annotations within strains](#4---merge-coverage-based-and-proTRAC-piC-annotations-within-strains)  
 
 
 ## 1 - Short reads pre-processing
