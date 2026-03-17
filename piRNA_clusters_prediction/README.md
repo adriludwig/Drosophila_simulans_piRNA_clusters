@@ -8,7 +8,7 @@ Two approaches were used to predict piRNA clusters: a coverage-based approach an
 2. [Coverage-based protocol](#2---coverage-based-protocol)  
 3. [proTRAC protocol](#3---protrac-protocol)  
 4. [Merge coverage-based and proTRAC piC annotations within strains](#4---merge-coverage-based-and-protrac-pic-annotations-within-strains)  
-
+5. [Cross-strain comparison of piRNA clusters](#5---cross-strain-comparison-of-piRNA-clusters)
 
 ## 1 - Short reads pre-processing
 
@@ -262,3 +262,167 @@ This script projects the filtered reference gene annotation to each strain genom
 
 [Back to Table of Contents](#table-of-contents)
 
+## 5 - Cross-strain comparison of piRNA clusters
+
+Once potential piRNA clusters (piCs) were identified in each strain, the next step was to determine whether these clusters are strain-specific or shared across strains.
+To enable this comparison, cluster coordinates were first transferred to the reference genome coordinates and then intersected across strains
+
+### 5.1 - Transferring coordinates
+
+For each strain, piC coordinates were transferred to Prin_Dsim_3.1 genome using the halLiftover tool [(Hickey et al., 2013)](https://pmc.ncbi.nlm.nih.gov/articles/PMC3654707/) using the hierarchical alignment (HAL) obtained by the pangenome analysis.
+Around 70% of coordinates were transferred with this approach.
+Additional efforts to obtain more transferred coordinates involved: 1) Using halLiftover for 10 kb upstream and downstream piC regions, which recovered an additional 381 coordinates. 2) Using Liftoff, we recovered an additional 109 coordinates, keeping only entries for larger piCs (\>10 kb) where the transferred coordinates were in the same chromosome with close proximity (\<100 kb).
+Each step is described below:
+
+#### 5.1.1 - Transferring coordinates from Pangenome alignment
+
+Several file preparations are needed before running halLiftover:
+
+#### 5.1.1.1 - Softmasking the genomes
+
+Genomes need to be softmasked to run Cactus pangenome.
+The genomes were masked using bedtools and their respective TE annotation.
+
+**Script**: [5.1.1.1_getting_soft_masked_genomes.sh](scripts/5.1.1.1_getting_soft_masked_genomes.sh)
+
+##### Inputs:
+
+-   Genome assemblies for each strain: `*_final_assembly.fasta`
+
+-   TE annotations for each strain: `*_final_TE_annotation_morestringent_new.bed`
+
+##### **Output:**
+
+-   Soft-masked genomes: `*final_assembly.softmasked.fasta`
+
+#### **5.1.1.2 Cleaning genome fasta headers**
+
+Genome FASTA headers were simplified because the downstream program did not accept complex identifiers.
+
+```{bash eval = FALSE}
+for file in *_final_assembly.softmasked.fasta; do
+  awk '/^>/ {
+    header = substr($0, 2);
+    sub(/_[^A-Za-z0-9]+$/, "", header);  # Remove ONLY non-alphanumeric suffixes after last _
+    print ">" header;
+    next
+  } { print }' "$file" > "${file%.fasta}.cleaned.fasta"
+done
+```
+
+##### **Output:**
+
+-   Soft-masked genomes with edited headers: **`*`**`_final_assembly.softmasked.cleaned.fasta`
+
+#### **5.1.1.3 Cleaning piC BED file headers**
+
+Because contig names were simplified in the genome FASTA files, the same modification had to be applied to the piC BED files to maintain coordinate compatibility.
+
+##### **Input:**
+
+-   piC annotation obtained for each strain: `*_pic_outside_gene_2kb_final.bed`
+
+```{bash eval = FALSE}
+for bed in *_pic_outside_gene_2kb_final.bed; do
+  sample=$(basename "$bed" _pic_outside_gene_2kb_final.bed)
+  awk '{
+    chrom = $1;
+    sub(/_[^A-Za-z0-9]+$/, "", chrom);  # Remove ONLY non-alphanumeric suffixes 
+    $1 = chrom;
+    print
+  }' OFS='\t' "$bed" > "${sample}.cleaned.bed"
+done
+```
+
+##### **Output:**
+
+-   piC annotation with edited coordinates for each strain: `*_cleaned.bed`
+
+#### **5.1.1.4 Edit piC bed files to simplify the information**
+
+To facilitate coordinate transfer and tracking of piRNA clusters, the BED files were simplified to contain only the genomic coordinates and a unique identifier in the fourth column.
+Each piRNA cluster (piC) was assigned a sequential identifier (piC1, piC2, etc.), allowing clusters to be tracked after coordinate conversion.
+
+**Script**: [5.1.1.4_simplify_piC_bed.py](scripts/5.1.1.4_simplify_piC_bed.py)
+
+##### Input:
+
+-   piC annotation with edited coordinates for each strain: `*_cleaned.bed`
+
+##### **Output**:
+
+-   Simplified piC annotation: `*_simplified.bed`
+
+-   Reference table linking the original BED entries to the newly assigned piC identifiers: `*_reference_with_piC.txt`
+
+### 5.1.2 Running pangenome
+
+The [cactus](https://github.com/ComparativeGenomicsToolkit/cactus) pangenome pipeline was run to construct a graph-based genome alignment.
+The analysis was executed within the Cactus Singularity container.
+
+```{bash eval = FALSE}
+source /pub63/adriana/bin/cactus-bin-v2.9.8/venv-cactus-v2.9.8/bin/activate
+
+singularity exec ~/bin/cactus-singularity/cactus_v2.9.7.sif cactus-pangenome ./jobStore  Dsim_genomes_new_pan.txt --outDir pangenome_new  --outName pangenome_new --reference REF --vcf --giraffe --gfa --gbz 
+```
+
+##### **Input:**
+
+-   Configuration file listing the softmasked genomes to be included in the pangenome analysis and specifying the reference genome (REF): `Dsim_genomes_new_pan.txt`
+
+-   Softmasked genomes assemblies: `*_final_assembly.softmasked.cleaned.fasta`
+
+##### **Output:**
+
+-   Directory containing all pangenome files output: `pangenome_new/`
+
+### 5.1.3 Transferring coordinates using halLiftover
+
+#### 5.1.3.1 Run halLiftover
+
+This step transfers piC coordinates from each strain to the reference coordinates using the multiple genome alignment (.hal file) generated by Cactus pangenome.
+
+```{bash eval = FALSE}
+for bed in *_simplified.bed; do
+  sample=$(basename "$bed" _simplified.bed)
+  echo "Running halLiftover for $sample"
+  halLiftover ../pangenome_new/pangenome_new.full.hal "$sample" "$bed" REF "../halLiftover/${sample}_liftover.bed"
+done
+```
+
+##### **Inputs:**
+
+-   Simplified piRNA cluster coordinates for each strain:`*_simplified.bed`
+
+-   Multiple genome alignment generated by the Cactus pangenome: `pangenome_new.full.hal`
+
+##### Output:
+
+-   BED file for each strain containing piRNA cluster coordinates converted to the REF coordinates (a single piC may be represented by multiple adjacent intervals, reflecting alignment blocks in the HAL genome alignment.): `*_liftover.bed`\
+
+#### 5.1.3.2 Getting start and end for each piC
+
+The output of halLiftover may contain multiple entries for the same piRNA cluster because the coordinate transfer follows the genome alignment blocks.
+As a result, a single piC may be split into several adjacent segments in the reference genome.
+To reconstruct the full cluster coordinates, these fragments were merged by retaining the first start position and the last end position for each piC.
+
+```{bash eval = FALSE}
+e.g. piC2 coordinates will be NC_052520.2:13508030-13508216
+NC_052520.2     13508030        13508166        piC2 #first start:13508030
+NC_052520.2     13508166        13508175        piC2
+NC_052520.2     13508175        13508201        piC2
+NC_052520.2     13508201        13508216        piC2 #last end:13508216
+```
+
+**Script**: [5.1.3.2_merge_transfered_pic_ranges.py](scripts/5.1.3.2_merge_transfered_pic_ranges.py)
+
+```{bash eval = FALSE}
+for bed in *_liftover.bed; do
+  sample=${bed%_liftover.bed}
+  python ./merge_transfered_pic_ranges.py "$bed" "${sample}_merged.bed"
+done
+```
+
+##### Output: 
+
+BED files containing a single interval per piRNA cluster in reference genome coordinates: `*_merged.bed`
