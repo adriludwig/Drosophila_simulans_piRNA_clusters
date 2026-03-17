@@ -242,7 +242,7 @@ This script projects the filtered reference gene annotation to each strain genom
 
 -   Predicted piRNA clusters:`*_coverage_protrac_merged.bed`
 
--   Gene annotations generated in the previous step (transformed to bed using [gff_to_bed.py](scripts/gff_to_bed.py): `*_final_assembly_liftoff_noTE_nolncRNA.gff.bed`
+-   Gene annotations generated in the previous step (transformed to bed using [gff_to_bed.py](scripts/gff_to_bed.py)): `*_final_assembly_liftoff_noTE_nolncRNA.gff.bed`
 
 -   TE annotations:`*_final_TE_annotation_morestringent.bed`
 
