@@ -87,7 +87,7 @@ This R script performs the filtering and final selection of candidate piRNA clus
 
 - Summary of all predicted piCs predicted by strain using coverage-based approach, after filtering: [piCs_coverage_based.txt](results/piCs_coverage_based.txt)
 
-[Back to Table of Contents](table-of-contents)
+[Back to Table of Contents](#table-of-contents)
 
 ## 3 - **proTRAC protocol**
 
@@ -159,7 +159,7 @@ Merging piCs and eliminating those that do not intersect with TEs
 
 Summary of all piCs predicted by strain using proTRAC approach: [piCs_protrac.txt](results/piCs_protrac.txt)
 
-[Back to Table of Contents](table-of-contents)
+[Back to Table of Contents](#table-of-contents)
 
 # 4 - Merge coverage-based and proTRAC piC annotations within strains
 
@@ -258,5 +258,5 @@ This script projects the filtered reference gene annotation to each strain genom
 
 - Final piC annotation per strain before liftover: [summary_piCs_before_liftover.tsv](results/summary_piCs_before_liftover.tsv)
 
-[Back to Table of Contents](table-of-contents)
+[Back to Table of Contents](#table-of-contents)
 
