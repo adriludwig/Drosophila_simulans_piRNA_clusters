@@ -128,3 +128,4 @@ tables_with_TSD/
 ├── sample.Shellder.tsv
 └── sample.Spoink.tsv
 ```
+These files were also concatenated creating a single file for each strain: `*.allTE.tsv`
