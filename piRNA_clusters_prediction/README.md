@@ -8,7 +8,7 @@ Two approaches were used to predict piRNA clusters: a coverage-based approach an
 2. [Coverage-based protocol](#2---coverage-based-protocol)  
 3. [proTRAC protocol](#3---protrac-protocol)  
 4. [Merge coverage-based and proTRAC piC annotations within strains](#4---merge-coverage-based-and-protrac-pic-annotations-within-strains)  
-5. [Cross-strain comparison of piRNA clusters](#5---cross-strain-comparison-of-pirna-clusters)
+5. [Cross-strain comparison of piRNA clusters](#5---cross-strain-comparison-of-pirna-clusters--coordinates-transfer)
 
 ## 1 - Short reads pre-processing
 
@@ -262,7 +262,7 @@ This script projects the filtered reference gene annotation to each strain genom
 
 [Back to Table of Contents](#table-of-contents)
 
-## 5 - Cross-strain comparison of piRNA clusters
+## 5 - Cross-strain comparison of piRNA clusters 
 
 Once potential piRNA clusters (piCs) were identified in each strain, the next step was to determine whether these clusters are strain-specific or shared across strains.
 To enable this comparison, cluster coordinates were first transferred to the reference genome coordinates and then intersected across strains
