@@ -8,7 +8,7 @@ Two approaches were used to predict piRNA clusters: a coverage-based approach an
 2. [Coverage-based protocol](#2---coverage-based-protocol)  
 3. [proTRAC protocol](#3---protrac-protocol)  
 4. [Merge coverage-based and proTRAC piC annotations within strains](#4---merge-coverage-based-and-protrac-pic-annotations-within-strains)  
-5. [Cross-strain comparison of piRNA clusters -coordinates-transfer ](#5---cross-strain-comparison-of-pirna-clusters-coordinates-transfer)
+5. [Cross-strain comparison of piRNA clusters -coordinates-transfer](#5---cross-strain-comparison-of-pirna-clusters--coordinates-transfering)
 6. 
 5. [Cross-strain comparison of piRNA clusters -coordinates-transfer](#5-cross-strain-comparison-of-pirna-clusters--coordinates-transfer)
 
