@@ -532,7 +532,7 @@ An additional attempt to transfer coordinates for the remaining piCs was done wi
 
 ##### **Main output:**
 
-Additional piCs with transferred coordinates for each strain (non-lifted with the two previous approaches): /lift_remaining_flanking/concat_lifted/non_lifted/liftoff_remaining/\*\_non_lifted_lifted.bed
+Additional piCs with transferred coordinates for each strain (non-lifted with the two previous approaches): `/lift_remaining_flanking/concat_lifted/non_lifted/liftoff_remaining/\*\_non_lifted_lifted.bed`
 
 ### 5.3.3 - Concatenating all transferred coordinates
 
@@ -544,7 +544,7 @@ This script appends the original information of the piC annotation to the lifted
 
 Script: [5.4_recovering_original_piC_info.sh](scripts/5.4_recovering_original_piC_info.sh)
 
-**Output:** `*_final_lifted_ed.bed`
+##### Output: `*_final_lifted_ed.bed`
 
 Bed-like file to intersect
 ```{bash eval = FALSE}
