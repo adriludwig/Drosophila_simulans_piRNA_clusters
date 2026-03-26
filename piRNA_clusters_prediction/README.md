@@ -264,7 +264,7 @@ This script projects the filtered reference gene annotation to each strain genom
 
 [Back to Table of Contents](#table-of-contents)
 
-## 5 - Cross-strain comparison of piRNA clusters 
+## 5 - Cross-strain comparison of piRNA clusters - coordinates transferring
 
 Once potential piRNA clusters (piCs) were identified in each strain, the next step was to determine whether these clusters are strain-specific or shared across strains.
 To enable this comparison, cluster coordinates were first transferred to the reference genome coordinates and then intersected across strains
