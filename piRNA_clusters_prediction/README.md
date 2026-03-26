@@ -9,7 +9,9 @@ Two approaches were used to predict piRNA clusters: a coverage-based approach an
 3. [proTRAC protocol](#3---protrac-protocol)  
 4. [Merge coverage-based and proTRAC piC annotations within strains](#4---merge-coverage-based-and-protrac-pic-annotations-within-strains)  
 5. [Cross-strain comparison of piRNA clusters -coordinates-transfer ](#5---cross-strain-comparison-of-pirna-clusters-coordinates-transfer)
+6. 
 5. [Cross-strain comparison of piRNA clusters -coordinates-transfer](#5-cross-strain-comparison-of-pirna-clusters--coordinates-transfer)
+
 ## 1 - Short reads pre-processing
 
 Short reads were trimmed with Cutadapt v1.2.1 [(Martin, 2011)](https://journal.embnet.org/index.php/embnetjournal/article/view/200) to remove adapters and select reads of 23-29 nucleotides.
