@@ -510,7 +510,46 @@ for file in *_non_lifted_lifted.bed; do
     > "concat_lifted/${sample}_lifted.bed"
 done
 ```
-
 ##### Output:
 
 - `concat_lifted/*_lifted.bed`
+
+## 5.3 - Transferring coordinates Using Liftoff
+
+An additional attempt to transfer coordinates for the remaining piCs was done with Liftoff.
+
+### 5.3.1 - Getting non-transferred piCs
+
+**Script:** [5.3.1_extract_nonlifted_piCs_2.sh](scripts/5.3.1_extract_nonlifted_piCs_2.sh)
+
+##### **Outputs:**
+
+`lift_remaining_flanking/concat_lifted/non_lifted/*_non_lifted.bed`
+
+### 5.3.2 - Running Liftoff
+
+**Script:** [5.3.2_liftoff_remaining_piCs.sh](scripts/5.3.2_liftoff_remaining_piCs.sh)
+
+##### **Main output:**
+
+Additional piCs with transferred coordinates for each strain (non-lifted with the two previous approaches): /lift_remaining_flanking/concat_lifted/non_lifted/liftoff_remaining/\*\_non_lifted_lifted.bed
+
+### 5.3.3 - Concatenating all transferred coordinates
+
+All lifted piCs for each strain were concatenated in a final file: `*_final_lifted.bed`
+
+
+## 5.4 Recovering original information of piCs
+This script appends the original information of the piC annotation to the lifted coordinates
+
+Script: [5.4_recovering_original_piC_info.sh](scripts/5.4_recovering_original_piC_info.sh)
+
+**Output:** `*_final_lifted_ed.bed`
+
+Bed-like file to intersect
+```{bash eval = FALSE}
+for file in *_final_lifted_ed.bed; do
+     sample=$(basename "$file" _final_lifted_ed.bed)
+      awk 'OFS="\t"{print $1,$2,$3}' $file >${sample}_final_lifted_to_intersect.bed
+done
+```
