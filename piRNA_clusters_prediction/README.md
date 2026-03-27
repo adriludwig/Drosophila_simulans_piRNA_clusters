@@ -106,7 +106,7 @@ Mapping filtered reads against the respective genome assemblies and running proT
 ##### Inputs:
 
 -   Deduplicated small RNA FASTQ files for all replicates of each strain: `*_dedup.fastq`
--   
+  
 -   Strain-specific genome assemblies: `*_final_assembly.fasta`
 
 ##### **Main Outputs:**
