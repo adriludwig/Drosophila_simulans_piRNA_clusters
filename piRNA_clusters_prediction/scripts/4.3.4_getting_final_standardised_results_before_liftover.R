@@ -1,5 +1,4 @@
-#Step 4 - Merging piCs and 
-#This script processes and standardizes the final set piRNA clusters
+#This script processes and standardizes the final set piRNA clusters before liftover
 # Paths correspond to the internal computing environment and should be adapted if the script is reused.
 
 # Load libraries
