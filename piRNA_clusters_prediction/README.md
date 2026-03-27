@@ -626,7 +626,7 @@ Script: [6.6_getting_final_standardised_results_after_liftover.R](scripts/6.6_ge
 
 ## 7 - Getting final non-lifted piCs
 
-**Script:** [7_extract_nonlifted_piCs_final.sh](script/7_extract_nonlifted_piCs_final.sh)
+**Script:** [7_extract_nonlifted_piCs_final.sh](scripts/7_extract_nonlifted_piCs_final.sh)
 
 **Output:** \*\_non_lifted.bed;
 
