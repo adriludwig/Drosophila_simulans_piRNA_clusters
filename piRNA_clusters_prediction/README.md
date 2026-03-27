@@ -621,3 +621,14 @@ Script: [6.6_getting_final_standardised_results_after_liftover.R](scripts/6.6_ge
 
 -   Final piC annotation per strain after liftover: [summary_piCs_after_liftover.tsv](results/summary_piCs_after_liftover.tsv)
 
+[Back to Table of Contents](#table-of-contents)
+
+## 7 - Getting final non-lifted piCs
+
+**Script:** [7_extract_nonlifted_piCs_final.sh](script/7_extract_nonlifted_piCs_final.sh)
+
+**Output:** \*\_non_lifted.bed;
+
+Output for all strains: [all_final_non_lifted_pics.bed](results/all_final_non_lifted_pics.bed)
+
+[Back to Table of Contents](#table-of-contents)
