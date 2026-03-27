@@ -554,3 +554,69 @@ for file in *_final_lifted_ed.bed; do
       awk 'OFS="\t"{print $1,$2,$3}' $file >${sample}_final_lifted_to_intersect.bed
 done
 ```
+[Back to Table of Contents](#table-of-contents)
+
+## 6 - Intersecting piCs across Strains
+
+### 6.1 - Concatenating piC annotation files
+
+```{bash eval = FALSE}
+#Select columns chrom, start, end, strain
+>cat_final_lifted_to_intersect.bed
+for file in *_final_lifted_ed.bed; do awk 'OFS="\t"{print $1,$2,$3,$8}' $file >>cat_final_lifted_to_intersect.bed; done
+#sort
+sort -k1,1 -k2,2n cat_final_lifted_to_intersect.bed >cat_final_lifted_to_intersect_sorted.bed
+```
+
+### 6.2 - Subtracting gene regions again
+
+During coordinate transfer, some regions overlapping genes were reintroduced into the dataset. Although gene filtering had already been applied per strain earlier in the pipeline (which is important for accurate statistics within strains), this step is required to remove any gene-overlapping regions that reappeared after coordinates transfer. Therefore, gene filtering was applied again.
+
+More info on how the reference GFF was filtered is here: [4.3.1- Eliminating gene regions from piC annotation](#431---eliminating-gene-regions%20from-pic)
+
+```{bash eval = FALSE}
+#subtract genes
+bedtools subtract -a cat_final_lifted_to_intersect_sorted.bed -b GCF_filtered_no_lncRNA_noTE_ID_gene.bed |awk 'OFS="\t" {print $0,"cluster_"NR}'>cat_final_lifted_nogenes.tsv
+
+#getting a bed file with only genes that intersect with the piCs
+bedtools intersect -a GCF_filtered_no_lncRNA_noTE_ID_gene.bed -b cat_final_lifted_to_intersect_sorted.bed  -wa |awk 'OFS="\t"{print $1,$2,$3,$4, "gene"}'|sort|uniq > genes_intersecting
+```
+
+### 6.3 Merging piCs across strains
+
+```{bash eval = FALSE}
+sort -k1,1 -k2,2n cat_final_lifted_nogenes.tsv|bedtools merge -i - -c 4 -o collapse >merged_lifted_final.bed
+```
+
+### 6.4 Minimal cluster curation
+
+We manually curated the clusters by inspecting their TE composition. Clusters without TEs were removed, and clusters corresponding to the same locus across strains were given the same ID (when eventually they initially had different ones).
+
+Output: `merged_lifted_final_piCs_inspected.bed`
+
+### 6.5 Getting full information of piCs
+
+To get the original information of piRNA clusters in the strains, we intersected the merged annotations with the original files.
+
+```{bash eval = FALSE}
+pwd:/data/adriana/TE_Invasions/Nanopore/cactus/cactus_singularity/halLiftover/final_piCs_lifted
+for file in *_final_lifted_ed.bed; do
+    sample=$(basename "$file" _final_lifted_ed.bed)
+bedtools intersect -a merged_lifted_final_piCs_inspected.bed -b $file -wa -wb >${sample}_reverted_piCs
+done
+
+cat *_reverted_piCs >cat_reverted_piCs.txt
+```
+
+### 6.6 Getting final standardised piC results - after liftover**
+
+Script: [6.6_getting_final_standardised_results_after_liftover.R](scripts/6.6_getting_final_standardised_results_after_liftover.R)
+
+##### Input:
+
+-   piRNA cluster annotation: `cat_reverted_piCs.txt`
+
+##### Output:
+
+-   Final piC annotation per strain after liftover: [summary_piCs_after_liftover.tsv](results/summary_piCs_after_liftover.tsv)
+
