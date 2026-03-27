@@ -252,6 +252,7 @@ This script projects the filtered reference gene annotation to each strain genom
 
 ### 4.3.4 - Getting final standardised piC results - before liftover
 
+**Script:** [4.3.4_getting_final_standardised_results_before_liftover.R](scripts/4.3.4_getting_final_standardised_results_before_liftover.R)
 ##### Input: 
 
 - piRNA cluster annotation: `pic_outside_gene_2kb_final_all.bed`
