@@ -1,7 +1,7 @@
 
 # TE insertion detection from long reads
 
-Because TEs are often polymorphic among individuals, not all TE insertions are expected to be represented in the genome assemblies. Assemblies typically capture the major haplotypes, and insertions present at low frequency may therefore be missed.
+Because TEs are often polymorphic among individuals, not all TE insertions are expected to be represented in the genome assemblies. 
 
 To obtain a more comprehensive view of TE insertions, we analysed the long-read sequencing data using [Sniffles2](https://github.com/fritzsedlazeck/Sniffles), a structural variant detection tool designed for long-reads. This analysis specifically focused on detecting insertions corresponding to the P-element, Shellder, and Spoink.
 
