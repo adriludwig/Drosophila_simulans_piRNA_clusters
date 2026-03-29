@@ -80,4 +80,4 @@ pics_lifted_filtered <- pics_lifted_filtered %>%
   ungroup()
 
 # save final result
-write.table(pics_filtered, file = "../results/summary_piCs_after_liftover.tsv", row.names=FALSE,sep="\t")
+write.table(pics_lifted_filtered, file = "../results/summary_piCs_after_liftover.tsv", row.names=FALSE,sep="\t")
