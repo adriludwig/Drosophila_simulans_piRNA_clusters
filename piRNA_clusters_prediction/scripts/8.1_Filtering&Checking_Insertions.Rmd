@@ -1,0 +1,515 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+# Filtering and Checking P-element, Shellder and Spoink insertions into piRNA clusters
+
+Insertions were identified with sniffles2 and intersected with piRNA clusters annotation.
+
+Here, some filtering was applied below to eliminate insertions with low support (support \<2).
+
+Moreover, insertions in piRNA clusters with less than 5 reads of support (total) or less than 3 reads spanning the insertions were flagged to be inspected in IGV.
+
+Finally, some insertions were edited to include piRNA cluster information.
+
+## 1. Load libraries
+
+```{r message = FALSE}
+library(readxl)
+library(dplyr)
+library(ggplot2)
+library(writexl)
+library(readr)
+```
+
+## 2. Load data
+
+```{r}
+#edited dataset of all insertions found using Sniflles2 crosmatched with the TE annotation from the assemled genomes and the piRNA cluster annotation
+insertions<-read_excel("P_Shellder_Spoink_all_strains_insertions_ed.xlsx")
+insertions<-insertions%>%
+  mutate(SUP_SPAN=SUPPORT -  SUPPORT_LONG)
+
+#piRNA cluster annotation to recover complete information
+pics_info<-read.table("summary_piCs_after_liftover.tsv", header=TRUE)
+```
+
+```{r}
+pics_info_selected<-pics_info%>%
+  select(Chrom_R,Start_RF,End_RF,piC_number, Strain, unique_sample_count)
+write_tsv(pics_info_selected, "pics_info_selected.bed", col_names = FALSE)
+```
+
+## 3. Filtering: support \>=2
+
+Eliminating insertions with only 1 support read.
+
+```{r}
+insertions_filtered1 <- insertions %>%
+  filter(SUPPORT>=2)
+```
+
+## 4. Creating insertion index
+
+```{r}
+insertions_filtered1 <- insertions_filtered1 %>%
+  arrange(CHROM, POS) %>%
+  group_by(CHROM, POS) %>%
+  mutate(insertion = if_else(
+    is.na(CHROM) | is.na(POS),
+    NA_integer_,
+    cur_group_id()
+  )) %>%
+  ungroup()
+```
+
+## 5. Strains
+
+```{r}
+all = c("Cro18","AA1","AA12","AH24","AH33","AH35","Hin17","Lps3","Lps5","LSD01","LSD07","MD221","MD233","MSC01","MSC04","PUS102","PUS412","SGA12","SGA20","SGA26","SGA27","SGA34")
+pstrains = c("Cro18","AH24","AH33","AH35","LSD01","LSD07","MSC01","MSC04","PUS102","PUS412")
+mstrains  = setdiff(all, pstrains)
+```
+
+## 6. Insertions in piCs
+
+```{r}
+insertions_pics<-insertions_filtered1%>%
+  filter(pic!="no")
+```
+
+### 6.1 piCs containing P element
+
+```{r}
+P_ins<-insertions_filtered1%>%
+  filter(TE=="P_Ds#DNA/P")
+P_ins_pic<-insertions_pics%>%
+  filter(TE=="P_Ds#DNA/P")
+P_ins_pic_check<-P_ins_pic%>%
+  filter(SUPPORT<=5|SUP_SPAN<=3)
+```
+
+#### 6.1.1 Visual Inspection
+
+Three insertions were removed after IGV inspection (LSD07: 2, 3; MSC04: 230); MSC04 insertion 1 was retained.
+
+```{r}
+P_ins_pics_filtered <- P_ins_pic %>%
+  filter(!(Strain == "LSD07" & insertion %in% c(2, 3))) %>%
+  filter(!(Strain == "MSC04" & insertion == "230")) 
+```
+
+#### 6.1.2 Adding additional piCs
+
+This insertion was clearly found in IGV, but it was not called in Sniffles2 (AH33: 1).
+
+```{r}
+new_row <- tibble::tibble(
+  Strain = "AH33",              
+  Status_copy = "Non-assembled",         
+  TEbed_chrom = "NC_052520.2_RagTag",
+  TEbed_start1 = 56284,
+  TEbed_end1 = NA,
+  TEbed_strand = NA,
+  pic = "1",
+  CHROM = "NC_052520.2",
+  POS = 73341,
+  ID = "Sniffles2.INS.46S0",
+  SVLEN = 5819,
+  SUPPORT = 52,
+  SUPPORT_LONG = 30,
+  AF = 1.000,
+  GT = "1/1",
+  GQ = 60,
+  DR = 0,
+  DV = 199,
+  TE = "P_Ds#DNA/P",
+  TSD = "AGGCAGAG(nested GGACCACC)",
+  LiftChrom = NA,
+  LiftStart0 = NA,
+  LiftEnd0 = NA,
+  SUP_SPAN = 22,
+  insertion = 2
+)
+
+P_ins_pics_filtered_add1 <- bind_rows(P_ins_pics_filtered, new_row)
+```
+
+Coordinates of P insertions in the reference genome were intersected with the trasffered piC coordinates across all strains. Although the initial analysis considered only piCs predicted within each strain, this extended comparison was performed to identify regions that may not have been called as piCs in a given strain due to filtering or parameter settings. Candidate regions were then visually inspected in IGV to confirm whether they display a piRNA distribution consistent with bona fide piRNA clusters. The insertions should have good support as well.
+
+One extra insertion in piC should be considered. (MSC01: insertion 821; NC_052525.2:82144) - It corresponds to the cluster 677 - piRNA cluster predicted in 8 strains.
+
+```{r}
+P_MSC01_677<- P_ins %>%
+  filter(Strain == "MSC01" & insertion == 821) %>%
+  mutate(pic = 677)%>%
+  mutate(pic = as.character(pic))
+P_ins_pics_filtered_add2 <- bind_rows(P_ins_pics_filtered_add1, P_MSC01_677)
+```
+
+#### 6.1.3 Join tables
+
+```{r warning = FALSE}
+P_ins_pics_filtered_add2$pic<-as.character(P_ins_pics_filtered_add2$pic)
+
+pics_info$piC_number<-as.character(pics_info$piC_number)
+
+P_ins_pics_filtered_info <- left_join(
+  P_ins_pics_filtered_add2,
+  pics_info,
+  by = c("pic" = "piC_number", "Strain" = "Strain")
+)
+
+#mannually adding the information about the new piC
+P_ins_pics_filtered_info <-P_ins_pics_filtered_info%>%
+  mutate(
+    unique_sample_count= ifelse (Strain=="MSC01" & insertion == 821,8,unique_sample_count),
+Status= ifelse (Strain=="MSC01" & insertion == 821, "Shared", Status)
+  )
+#The join step can increase the number of records because fragmented piRNA cluster annotations in some strains produce redundant matches for the same insertion. To resolve redundant entries, records were grouped by `Strain`, `insertion`, and `pic`. For each group, the entry was prioritized if the insertion coordinate (`TEbed_start`) fell within the cluster interval (`Start_S`–`End_S`). When no matching interval was found, a single representative entry was retained.
+
+P_clean <- P_ins_pics_filtered_info %>%
+  group_by(Strain, insertion, pic) %>%
+  mutate(
+    inside_interval = case_when(
+      !is.na(TEbed_start1) & !is.na(Start_S) & !is.na(End_S) &
+        TEbed_start1 >= Start_S & TEbed_start1 <= End_S ~ TRUE,
+      TRUE ~ FALSE
+    )
+  ) %>%
+  arrange(desc(inside_interval), .by_group = TRUE) %>%
+  slice(1) %>%
+  ungroup() %>%
+  select(-inside_interval)
+
+P_save<-P_clean%>%
+  select("Strain", "Status_copy", "TEbed_chrom","TEbed_start1","TEbed_end1",          "CHROM", "POS", "ID","SVLEN", "SUPPORT", "SUPPORT_LONG" , "TSD", "LiftChrom", "LiftStart0", "insertion", "pic","Chrom_R","Start_R","End_R","Chrom_S", "Start_S" , "End_S", "program",  "unique_sample_count" ,"Status", "Strains")
+
+colnames(P_save)<-c("Strain", "Status_copy", "TE_chrom","TE_start","TE_end", "Sniffles_INS_CHROM", "Sniffles_INS_TE_POS", "Sniffles_INS_ID","Sniffles_INS_SVLEN", "Sniffles_INS_SUPPORT", "Sniffles_INS_SUPPORT_LONG" , "TSD", "INS_LiftChrom", "INS_LiftStart", "insertion","piC_number", "piC_Chrom_Ref","piC_Start_Ref","piC_End_Ref", "piC_Chrom_Strain", "Start_Strain" , "End_Strain", "program",  "piC_strain_count" ,"Status_piC", "Strains_sharing_piC")
+```
+
+#### 6.1.4 Saving P table
+
+```{r}
+write_tsv (P_save,"piCs_containing_P_insertions.tsv")
+```
+
+### 6.2 piCs containing Shellder
+
+```{r}
+Shellder_ins<-insertions_filtered1%>%
+  filter(TE=="Shellder_Ds#LTR/Gypsy")
+#pics with sniffles confirmation
+Shellder_ins_pic<-insertions_pics%>%
+  filter(TE=="Shellder_Ds#LTR/Gypsy")
+Shellder_ins_pic_check<-Shellder_ins_pic%>%
+  filter(SUPPORT<=5|SUP_SPAN<=3)
+```
+
+#### 6.2.1 Adding additional piCs
+
+Coordinates of Sheldler insertions in the reference genome were intersected with the transferred piC coordinates across all strains. Although the initial analysis considered only piCs predicted within each strain, this extended comparison was performed to identify regions that may not have been called as piCs in a given strain due to filtering or parameter settings. Candidate regions were then visually inspected in IGV to confirm whether they display a piRNA distribution consistent with bona fide piRNA clusters. The insertions should have good support as well. In some cases, the insertions were predicted in a region of the reference that was not lifted to the original strain; thus, intersecting the reference coordinates is essential to identity the insertions (although it is not possible to check them in IGV).
+
+9 insertions should be considered:
+
+SGA12: insertion 192 - NC_052520.2:22425792; Non-lifted insertion; pic 197 present in 22 strains
+
+SGA26 insertion 198 - NC_052520.2:22768535;Non-lifted insertion; pic 203 present in 22 strains
+
+LSD07 insertion 217 - NC_052521.2 2082214; predicted pic coordinates in LSD07 is shorter not including the region of the insertion, but it should be extended; pic 241 present in 22 strains
+
+SGA26 insertion 1010 - NC_052525.2:21124740- Non-lifted insertion; flam1
+
+Lps3 insertion 1016 - NC_052525.2:21278474; predicted pic is shorter; flam1
+
+PUS102 insertion 1070 - NW_025416856.1:380584; Non-lifted insertion; flam2
+
+PUS102 insertion 1072 - NW_025416856.1:412944 412945; Non-lifted insertion; flam2
+
+SGA27 insertion 1081 - NW_025416877.1 656656; Non-lifted insertion; pic 904 present in 10 strains
+
+AA1 - assembled insertion NW_025416856.1_RagTag:185599-192265 not recovered by sniffles - but the region is correct in IGV. Potentially the insertion region is missing in the reference as it is a TE-rich region - pic 870
+
+```{r}
+Shellder_ins_ed <- Shellder_ins %>%
+  mutate(
+    pic = case_when(
+      Strain == "SGA12"  & insertion == 192  ~ "197",
+      Strain == "SGA26"  & insertion == 198  ~ "203",
+      Strain == "LSD07"  & insertion == 217  ~ "241",
+      Strain == "SGA27"  & insertion == 1081  ~ "904",
+      Strain == "SGA26"  & insertion == 1010 ~ "flam1",
+      Strain == "Lps3"   & insertion == 1016 ~ "flam1",
+      Strain == "PUS102" & insertion == 1070 ~ "flam2",
+      Strain == "PUS102" & insertion == 1072 ~ "flam2",
+      TRUE ~ as.character(pic)
+    )
+  )
+
+Shellder_AA1<- insertions %>%
+  filter(Strain == "AA1" & pic == 870)
+
+Shellder_ins_ed_add_pics <- bind_rows(Shellder_ins_ed, Shellder_AA1)%>%
+  filter(pic!="no")
+```
+
+#### 6.2.2 Visual inspection
+
+Seven insertions were removed after IGV inspection (MSC01:190; Lps5:173, 208; MD221: 383, 561 , 919; PUS102: 1097).
+
+```{r}
+#MSC01 - insertion 190
+#Lps5 insertion173 and 208
+#MD221 -insertion 383, 561 , 919
+#PUS102 insertion 1097
+Shellder_ins_pics_filtered<-Shellder_ins_ed_add_pics %>%
+  filter(!(Strain == "MSC01" & insertion == "190"))%>%
+      filter(!(Strain == "Lps5" & insertion %in% c(173, 208)))%>%
+         filter(!(Strain == "MD221" & insertion %in% c(383, 561,919)))%>%
+            filter(!(Strain == "PUS102" & insertion == "1097"))
+```
+
+#### 6.2.3 Join tables
+
+```{r warning= FALSE}
+Shellder_ins_pics_filtered$pic<-as.character(Shellder_ins_pics_filtered$pic)
+
+Shellder_ins_pics_filtered_info <- left_join(
+  Shellder_ins_pics_filtered,
+  pics_info,
+  by = c("pic" = "piC_number", "Strain" = "Strain")
+)
+
+#adding missing info for the insertions that were edited
+Shellder_ins_pics_filtered_info <-Shellder_ins_pics_filtered_info%>%
+   mutate(
+    Status = case_when(
+      Strain == "SGA12"  & insertion == 192  ~ "Shared",
+      Strain == "SGA26"  & insertion == 198  ~ "Shared",
+      Strain == "LSD07"  & insertion == 217  ~ "Shared",
+      Strain == "SGA27"  & insertion == 1081  ~ "Shared",
+      Strain == "SGA26"  & insertion == 1010 ~ "Shared",
+      Strain == "Lps3"   & insertion == 1016 ~ "Shared",
+      Strain == "PUS102" & insertion == 1070 ~ "Shared",
+      Strain == "PUS102" & insertion == 1072 ~ "Shared",
+      TRUE ~ as.character(Status)
+    )
+  )
+
+Shellder_clean <- Shellder_ins_pics_filtered_info %>%
+  group_by(Strain, insertion, pic) %>%
+  mutate(
+    inside_interval = case_when(
+      !is.na(TEbed_start1) & !is.na(Start_S) & !is.na(End_S) &
+        TEbed_start1 >= Start_S & TEbed_start1 <= End_S ~ TRUE,
+      TRUE ~ FALSE
+    )
+  ) %>%
+  arrange(desc(inside_interval), .by_group = TRUE) %>%
+  slice(1) %>%
+  ungroup() %>%
+  select(-inside_interval)
+
+```
+
+#### 6.2.4 Editing flamenco clusters
+
+Flamenco 1 and 2 are broken in our results due to the presence of genes internally. We edited the dataset, so they are not considered independent clusters.
+
+**Flamenco 1 - coordinates in the REF genome:** NC_052525.2:21072908-21518427
+
+From Dsim flamenco promoter NC_052525.2:21072908-21072947 to first Dip1 gene downstream flamenco NC_052525.2:21518427-21517464. It encompasses 2 clusters in our dataset:
+
+**pic 813:** NC_052525.2:21071002-21200919
+
+gene: TcTp gene interrupts flamenco 1 in some strains. It seems to have been inserted by retroposition.
+
+**pic 814:** NC_052525.2:21201858-21517404
+
+**Flamenco 2 -** **coordinates in the REF genome:** NW_025416856.1:19298-598917
+
+The 3' limit of flamenco 2 is harder to establish. We considered the last cluster without interruption of functional genes upstream su(f) suppressor of forked gene. 5' limit is the flamenco promoter. It encompasses at least 3 clusters in our dataset:
+
+**pic 870**: NW_025416856.1: 17436-304993
+
+**gene**: uncharacterized protein LOC6740449
+
+**pic 871:** NW_025416856.1:307843-333001
+
+**gene**: LOC27208153; pseudogene
+
+**pic 872**: NW_025416856.1: 336172-442148
+
+**PROBABLY THE LIMIT OF FLAMENCO2 IS HERE**
+
+**gene**: LOC6740432; antigen 5 like allergen Cul n 1
+
+**pic 873** NW_025416856.1: 443983-503477
+
+**gene**: LOC120285602; FACT
+
+**pic 874:** NW_025416856.1: 503832-504847
+
+```{r}
+Shellder_clean_ed<-Shellder_clean%>%
+  mutate(pic = case_when(
+    pic %in% c(813,814) ~ "flam1", 
+    pic %in% c(870, 871, 872) ~ "flam2",
+    TRUE ~ as.character(pic)  ))
+```
+
+#### 6.2.5 Saving Shellder table
+
+```{r}
+Shellder_save<-Shellder_clean_ed%>%
+  select("Strain", "Status_copy", "TEbed_chrom","TEbed_start1","TEbed_end1",          "CHROM", "POS", "ID","SVLEN", "SUPPORT", "SUPPORT_LONG" , "TSD", "LiftChrom", "LiftStart0", "insertion", "pic","Chrom_R","Start_R","End_R","Chrom_S", "Start_S" , "End_S", "program",  "unique_sample_count" ,"Status", "Strains")
+
+colnames(Shellder_save)<-c("Strain", "Status_copy", "TE_chrom","TE_start","TE_end", "Sniffles_INS_CHROM", "Sniffles_INS_TE_POS", "Sniffles_INS_ID","Sniffles_INS_SVLEN", "Sniffles_INS_SUPPORT", "Sniffles_INS_SUPPORT_LONG" , "TSD", "INS_LiftChrom", "INS_LiftStart", "insertion","piC_number", "piC_Chrom_Ref","piC_Start_Ref","piC_End_Ref", "piC_Chrom_Strain", "Start_Strain" , "End_Strain", "program",  "piC_strain_count" ,"Status_piC", "Strains_sharing_piC")
+```
+
+```{r}
+write_tsv (Shellder_save,"piCs_containing_Shellder_insertions.tsv")
+```
+
+#### 6.2.6 Shellder in Flamenco 1
+
+```{r}
+Shellder_flam1<-Shellder_clean_ed%>%
+  filter(pic=="flam1")
+print(length(unique(Shellder_flam1$Strain)))
+print(length((Shellder_flam1$insertion)))
+print(length(unique(Shellder_flam1$insertion)))
+```
+
+#### 6.2.7 Shellder inFlamenco 2
+
+```{r}
+Shellder_flam2<-Shellder_clean_ed%>%
+  filter(pic=="flam2")
+
+print(length(unique(Shellder_flam2$Strain)))
+print(length((Shellder_flam2$insertion)))
+print(length(unique(Shellder_flam2$insertion)))
+```
+
+### 6.3 piC Spoink
+
+```{r}
+Spoink_ins<-insertions_filtered1%>%
+  filter(TE=="Spoink_Ds#LTR/Gypsy")
+Spoink_ins_pic<-insertions_pics%>%
+  filter(TE=="Spoink_Ds#LTR/Gypsy")
+Spoink_ins_pic_check<-Spoink_ins_pic%>%
+  filter(SUPPORT<=5|SUP_SPAN<=3)
+```
+
+#### 6.3.1 Visual inspection
+
+After visual inspection in IGV, MSC04 insertion 211 should be deleted.
+
+```{r}
+Spoink_ins_pics_filtered<-Spoink_ins_pic %>%
+  filter(!(Strain == "MSC04" & insertion == "211"))
+```
+
+#### 6.3.2 Adding additional piCs
+
+Just as for P-element and Shellder, Spoink insertions in the reference genome were intersected with piC coordinates across all strains and piC candidate regions were then visually inspected. Three insertion were confirmed to be in a piC with this approach
+
+PUS102: insertion 236; NC_052521.2:4128489 - piC 269 - predicted for 11 strains
+
+```{r}
+Spoink_PUS102<- Spoink_ins %>%
+  filter(Strain == "PUS102" & insertion == 236) %>%
+  mutate(pic = 269)%>%
+  mutate(pic = as.character(pic))
+Spoink_ins_pics_filtered_add1 <- bind_rows(Spoink_ins_pics_filtered, Spoink_PUS102)
+```
+
+LSD07: insertion 565; NC_052522.2:23312811 - pic 495 present in 21 strains
+
+```{r}
+Spoink_LSD07<- Spoink_ins %>%
+  filter(Strain == "LSD07" & insertion == 565) %>%
+  mutate(pic = 465)%>%
+  mutate(pic = as.character(pic))
+Spoink_ins_pics_filtered_add2 <- bind_rows(Spoink_ins_pics_filtered_add1, Spoink_LSD07)
+```
+
+AA12: insertion 1033 - NC_052525.2:21645266 pic 817 predicted in 7 strains
+
+```{r}
+Spoink_AA12<- Spoink_ins %>%
+  filter(Strain == "AA12" & insertion == 1033) %>%
+  mutate(pic = 817)%>%
+  mutate(pic = as.character(pic))
+Spoink_ins_pics_filtered_add3 <- bind_rows(Spoink_ins_pics_filtered_add2, Spoink_AA12)
+```
+
+#### 6.3.3 Join tables
+
+```{r warning=FALSE}
+Spoink_ins_pics_filtered_add3$pic<-as.character(Spoink_ins_pics_filtered_add3$pic)
+
+Spoink_ins_pics_filtered_info <- left_join(
+  Spoink_ins_pics_filtered_add3,
+  pics_info,
+  by = c("pic" = "piC_number", "Strain" = "Strain")
+)
+#Adding info to clusters that were added
+#PUS102 insertion 236- NC_052521.2:4128489 - piC 269 - predicted for 11 strains
+Spoink_ins_pics_filtered_info <-Spoink_ins_pics_filtered_info%>%
+  mutate(
+    unique_sample_count= ifelse (Strain=="PUS102" & insertion == 236,11,unique_sample_count),
+Status= ifelse (Strain=="PUS102" & insertion == 236, "Shared", Status)
+  )
+#LSD07 insertion 565 - NC_052522.2:23312811 - pic 495 present in 21 strains
+Spoink_ins_pics_filtered_info <-Spoink_ins_pics_filtered_info%>%
+  mutate(
+    unique_sample_count= ifelse (Strain=="LSD07" & insertion == 565,21,unique_sample_count),
+Status= ifelse (Strain=="LSD07" & insertion == 565, "Shared", Status)
+  )
+#AA12 insertion 1033 - NC_052525.2:21645266 pic 817 predicted in 7 strains
+Spoink_ins_pics_filtered_info <-Spoink_ins_pics_filtered_info%>%
+  mutate(
+    unique_sample_count= ifelse (Strain=="AA12" & insertion == 1033,7,unique_sample_count),
+Status= ifelse (Strain=="AA12" & insertion == 1033, "Shared", Status)
+  )
+
+Spoink_clean <- Spoink_ins_pics_filtered_info %>%
+  group_by(Strain, insertion, pic) %>%
+  mutate(
+    inside_interval = case_when(
+      !is.na(TEbed_start1) & !is.na(Start_S) & !is.na(End_S) &
+        TEbed_start1 >= Start_S & TEbed_start1 <= End_S ~ TRUE,
+      TRUE ~ FALSE
+    )
+  ) %>%
+  arrange(desc(inside_interval), .by_group = TRUE) %>%
+  slice(1) %>%
+  ungroup() %>%
+  select(-inside_interval)
+
+```
+
+#### 6.3.4 Editing flamenco clusters
+
+```{r}
+Spoink_clean_ed<-Spoink_clean%>%
+  mutate(pic = case_when(
+    pic %in% c(813,814) ~ "flam1", 
+    pic %in% c(870, 871, 872) ~ "flam2",
+    TRUE ~ as.character(pic)  ))
+```
+
+#### 6.3.5 Saving Spoink table
+
+```{r}
+Spoink_save<-Spoink_clean_ed%>%
+  select("Strain", "Status_copy", "TEbed_chrom","TEbed_start1","TEbed_end1", "CHROM", "POS", "ID","SVLEN", "SUPPORT", "SUPPORT_LONG" , "TSD", "LiftChrom", "LiftStart0", "insertion", "pic","Chrom_R","Start_R","End_R","Chrom_S", "Start_S" , "End_S", "program",  "unique_sample_count" ,"Status", "Strains")
+
+colnames(Spoink_save)<-c("Strain", "Status_copy", "TE_chrom","TE_start","TE_end","Sniffles_INS_CHROM", "Sniffles_INS_TE_POS", "Sniffles_INS_ID","Sniffles_INS_SVLEN", "Sniffles_INS_SUPPORT", "Sniffles_INS_SUPPORT_LONG" , "TSD", "INS_LiftChrom", "INS_LiftStart", "insertion","piC_number", "piC_Chrom_Ref","piC_Start_Ref","piC_End_Ref", "piC_Chrom_Strain", "Start_Strain" , "End_Strain", "program",  "piC_strain_count" ,"Status_piC", "Strains_sharing_piC")
+
+write_tsv (Spoink_save,"piCs_containing_Spoink_insertions.tsv")
+```
