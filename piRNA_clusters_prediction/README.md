@@ -633,3 +633,36 @@ Script: [6.6_getting_final_standardised_results_after_liftover.R](scripts/6.6_ge
 Output for all strains: [all_final_non_lifted_pics.bed](results/all_final_non_lifted_pics.bed)
 
 [Back to Table of Contents](#table-of-contents)
+
+# 7 -P-element, Shellder and Spoink insertions into piRNA clusters
+
+We analysed the long-read sequencing data using [Sniffles2](https://github.com/fritzsedlazeck/Sniffles) to identify structural variants, followed by a pipeline to extract all insertion sequences and identify those that are P-element, Spoink and Shellder. The TSD sequences were also extracted.
+
+See [\*\*TE insertion detection from long reads](**%3Chttps://github.com/adriludwig/Drosophila_simulans_piRNA_clusters/tree/main/TE_insertion_detection_from_long_reads%3E**).\*\* 
+Later, we intersected the Sniffles insertions with the TE genome annotation to identify the assembled insertions. We also intersect the insertion coordinates with the piRNA cluster annotation. The results were reviewed and edited as needed. TE copies located within or near low-complexity regions introduced during assembly polishing (e.g., Racon and Medaka) were occasionally missed due to local sequence distortions and minor coordinate discrepancies. Only insertions confirmed by sniffles or by visual inspection in IGV were considered.
+
+## 7.1 - Filtering and checking insertions
+
+Some filtering was applied to eliminate insertions with low support (support \<2).
+
+Insertions in piRNA clusters with less than 5 reads of support (total) or less than 3 reads spanning the insertions were flagged to be inspected in IGV. Only the more confident ones were maintained in the dataset.
+
+**Script:** [Filtering&Checking_Insertions.Rmd](scripts/Filtering&Checking_Insertions.Rmd)
+
+##### Inputs:
+
+-   Edited dataset of all insertions of P, Shellder and Spoink found using Sniflles2 crossmatched with the TE annotation from the assembled genomes and the piRNA cluster annotation: [P_Shellder_Spoink_all_strains_insertions_ed.xlsx](results/P_Shellder_Spoink_all_strains_insertions_ed.xlsx)
+
+-   piRNA cluster annotation (to recover complete information of clusters):[summary_piCs_after_liftover.tsv](piRNA_clusters_prediction/results/summary_piCs_after_liftover.tsv)
+
+##### Outputs:
+
+-   [piCs_containing_P_insertions.tsv](results/piCs_containing_P_insertions.tsv)
+
+-   [piCs_containing_Spoink_insertions.tsv](results/piCs_containing_P_insertions.tsv)
+
+-   [piCs_containing_Shellder_insertions.tsv](results/piCs_containing_Shellder_insertions.tsv)
+
+
+[Back to Table of Contents](#table-of-contents)
+
