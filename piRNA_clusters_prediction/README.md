@@ -11,6 +11,7 @@ Two approaches were used to predict piRNA clusters: a coverage-based approach an
 5. [Cross-strain comparison of piRNA clusters - coordinates transfer](#5---cross-strain-comparison-of-pirna-clusters---coordinates-transfer)
 6. [Intersecting piCs across Strains](#6---intersecting-pics-across-strains)
 7. [Getting final non-lifted piCs](#7---getting-final-non-lifted-piCs)
+8. [P-element, Shellder and Spoink insertions into piRNA clusters](#8---p-element-,shellder-and-poink-insertions-into-piRNA-clusters)
 
 ## 1 - Short reads pre-processing
 
@@ -634,14 +635,14 @@ Output for all strains: [all_final_non_lifted_pics.bed](results/all_final_non_li
 
 [Back to Table of Contents](#table-of-contents)
 
-# 7 -P-element, Shellder and Spoink insertions into piRNA clusters
+# 8 - P-element, Shellder and Spoink insertions into piRNA clusters
 
 We analysed the long-read sequencing data using [Sniffles2](https://github.com/fritzsedlazeck/Sniffles) to identify structural variants, followed by a pipeline to extract all insertion sequences and identify those that are P-element, Spoink and Shellder. The TSD sequences were also extracted.
 
 See [\*\*TE insertion detection from long reads](**%3Chttps://github.com/adriludwig/Drosophila_simulans_piRNA_clusters/tree/main/TE_insertion_detection_from_long_reads%3E**).\*\* 
 Later, we intersected the Sniffles insertions with the TE genome annotation to identify the assembled insertions. We also intersect the insertion coordinates with the piRNA cluster annotation. The results were reviewed and edited as needed. TE copies located within or near low-complexity regions introduced during assembly polishing (e.g., Racon and Medaka) were occasionally missed due to local sequence distortions and minor coordinate discrepancies. Only insertions confirmed by sniffles or by visual inspection in IGV were considered.
 
-## 7.1 - Filtering and checking insertions
+## 8.1 - Filtering and checking insertions
 
 Some filtering was applied to eliminate insertions with low support (support \<2).
 
