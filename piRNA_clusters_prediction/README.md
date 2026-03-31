@@ -654,7 +654,7 @@ Insertions in piRNA clusters with less than 5 reads of support (total) or less t
 
 -   Edited dataset of all insertions of P, Shellder and Spoink found using Sniflles2 crossmatched with the TE annotation from the assembled genomes and the piRNA cluster annotation: [P_Shellder_Spoink_all_strains_insertions_ed.xlsx](results/P_Shellder_Spoink_all_strains_insertions_ed.xlsx)
 
--   piRNA cluster annotation (to recover complete information of clusters):[summary_piCs_after_liftover.tsv](piRNA_clusters_prediction/results/summary_piCs_after_liftover.tsv)
+-   piRNA cluster annotation (to recover complete information of clusters):[summary_piCs_after_liftover.tsv](results/summary_piCs_after_liftover.tsv)
 
 ##### Outputs:
 
