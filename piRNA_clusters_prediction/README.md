@@ -11,7 +11,7 @@ Two approaches were used to predict piRNA clusters: a coverage-based approach an
 5. [Cross-strain comparison of piRNA clusters - coordinates transfer](#5---cross-strain-comparison-of-pirna-clusters---coordinates-transfer)
 6. [Intersecting piCs across Strains](#6---intersecting-pics-across-strains)
 7. [Getting final non-lifted piCs](#7---getting-final-non-lifted-piCs)
-8. [P-element, Shellder and Spoink insertions into piRNA clusters](#8---p-element-,shellder-and-poink-insertions-into-piRNA-clusters)
+8. [P-element, Shellder and Spoink insertions into piRNA clusters](#8---p-element-shellder-and-poink-insertions-into-piRNA-clusters)
 
 ## 1 - Short reads pre-processing
 
