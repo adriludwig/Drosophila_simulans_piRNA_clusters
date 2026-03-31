@@ -648,7 +648,7 @@ Some filtering was applied to eliminate insertions with low support (support \<2
 
 Insertions in piRNA clusters with less than 5 reads of support (total) or less than 3 reads spanning the insertions were flagged to be inspected in IGV. Only the more confident ones were maintained in the dataset.
 
-**Script:** [Filtering&Checking_Insertions.Rmd](scripts/Filtering&Checking_Insertions.Rmd)
+**Script:** [8.1_Filtering&Checking_Insertions.Rmd](scripts/8.1_Filtering&Checking_Insertions.Rmd)
 
 ##### Inputs:
 
