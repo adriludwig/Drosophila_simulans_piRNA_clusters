@@ -2,12 +2,12 @@
 
 This directory contains the coordinates of potential structural errors identified by CRAQ after genome scaffolding.
 
-CRAQ detects regions with inconsistent read support that may indicate misassemblies.
+CRAQ detects regions with inconsistent read support that may indicate misassemblies, or, as the genomes were scaffolded, it can indicate the regions of contig joint.
 
 ## File format
 
 Tab-separated columns:
-1. **chromosome** - contig or scaffold ID  
+1. **chromosome** - scaffolded chromosome or contig
 2. **position** - genomic coordinate of the predicted breakpoint  
 3. **direction** - clipping direction at the breakpoint
 4. **clipped_reads** - number of reads showing clipping at the breakpoint  
