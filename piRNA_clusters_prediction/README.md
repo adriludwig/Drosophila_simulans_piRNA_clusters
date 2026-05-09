@@ -12,7 +12,7 @@ Two approaches were used to predict piRNA clusters: a coverage-based approach an
 6. [Intersecting piCs across Strains](#6---intersecting-pics-across-strains)
 7. [Getting final non-lifted piCs](#7---getting-final-non-lifted-piCs)
 8. [P-element, Shellder and Spoink insertions into piRNA clusters](#8---p-element-shellder-and-spoink-insertions-into-pirna-clusters)
-9. [Ping-pong signature detection](#9---ping--pong-signature-detection)
+9. [Ping-pong signature detection](#9---ping-pong-signature-detection)
 
 ## 1 - Short reads pre-processing
 
