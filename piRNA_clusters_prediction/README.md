@@ -667,3 +667,30 @@ Insertions in piRNA clusters with less than 5 reads of support (total) or less t
 
 [Back to Table of Contents](#table-of-contents)
 
+## 9 - Ping-pong signature detection
+
+Ping-pong cycle signature is characterized by an enrichment of 10 nt overlaps between piRNAs mapping to opposite strands. Filtered reads were mapped to the curated *D. simulans* TE library using Bowtie v1.3.1, allowing at most 2 mismatches. To quantify the ping-pong signature, we used the Python script [signature.py](https://github.com/ARTbio/tools-artbio/blob/main/tools/small_rna_signatures/signature.py) using the method originally described by ([Antoniewski, 2014](https://link.springer.com/protocol/10.1007/978-1-4939-0931-5_12)). A ping-pong signal was considered significant when the 10 nt overlap had at least 10 supporting read pairs and a Z-score ≥ 2.
+
+**Script:** 9_ping_pong_signature.sh
+
+[signature.py](https://github.com/ARTbio/tools-artbio/blob/main/tools/small_rna_signatures/signature.py)
+
+### Input: 
+
+-   Filtered piRNA reads. piRNAs filtered by sizea and also filtered to remove other RNA classes with no deduplication step.
+
+### Output:
+
+-   Sorted and indexed BAM alignment files of piRNAs against the TE library
+
+-   `*_pingpong_H.tsv` — overlap signature values
+
+-   `*_pingpong_Z.tsv` — ping-pong Z-score estimates
+
+-   Concatenated results:
+
+    -   all_replicates.pingpong_H_all.tsv
+
+    -   all_replicates.pingpong_Z_all.tsv
+
+[Back to Table of Contents](#table-of-contents)
