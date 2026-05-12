@@ -13,6 +13,7 @@ Two approaches were used to predict piRNA clusters: a coverage-based approach an
 7. [Getting final non-lifted piCs](#7---getting-final-non-lifted-piCs)
 8. [P-element, Shellder and Spoink insertions into piRNA clusters](#8---p-element-shellder-and-spoink-insertions-into-pirna-clusters)
 9. [Ping-pong signature detection](#9---ping-pong-signature-detection)
+10. [Expression of TE-associated piRNAs](#10---expression-of-te-associated-pirnas)
 
 ## 1 - Short reads pre-processing
 
@@ -694,5 +695,22 @@ Ping-pong cycle signature is characterized by an enrichment of 10 nt overlaps be
     -   [all_replicates.pingpong_H_all.tsv](results/all_replicates.pingpong_H_all.tsv)
 
     -   [all_replicates.pingpong_Z_all.tsv](results/all_replicates.pingpong_H_all.tsv)
+
+[Back to Table of Contents](#table-of-contents)
+
+## 10 - Expression of TE-associated piRNAs
+
+To quantify TE-associated piRNAs, filtered small RNA reads previously mapped against the curated *D. simulans* TE consensus (allowing 2 mismatches and multimappers) library. Sense and antisense read counts were used to calculate RPKM values based on TE consensus length. To normalise libraries, the filtered small RNA reads were also mapped against *D. simulans* miRNAs set (downloaded from [miRBase](https://www.mirbase.org/browse/results/?organism=dsi)) using Bowtie, allowing up to 2 mismatches and retaining uniquely mapped reads. The total number of mapped miRNA reads per replicate was used as the normalisation factor for both RPKM calculation and coverage scaling.
+
+To visualise piRNA distribution across TE consensus sequences, strand-specific coverage profiles were generated using bedtools genomecov in bedGraph mode. Coverage values were scaled to reads per million mapped miRNA reads (PPM), generating normalised plus- and minus-strand coverage tracks across each TE consensus sequence.
+
+**Scripts:**
+
+[scripts/0.1_mapping_microRNA.sh](scripts/10.1_mapping_microRNA.sh)
+
+[scripts/10.2_get_RPKM_TEs.py](scripts/10.2_get_RPKM_TEs.py)
+
+[scripts/10.3_make_TE_bigwigs.sh](scripts/110.3_make_TE_bigwigs.sh)
+
 
 [Back to Table of Contents](#table-of-contents)
