@@ -1,7 +1,7 @@
 # Drosophila simulans piRNA clusters
 Code and materials associated with the manuscript: 
 
-# Historical adaptation to transposable element invasions in Drosophila is primarily due to insertions in piRNA clusters
+# Historical adaptation to transposable element invasions in *Drosophila* is primarily due to insertions in piRNA clusters
 
 ## Authors
 Adriana Ludwig[1,2], 
