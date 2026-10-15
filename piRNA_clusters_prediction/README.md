@@ -660,11 +660,11 @@ Insertions in piRNA clusters with less than 5 reads of support (total) or less t
 
 ##### Outputs:
 
--   [piCs_containing_P_insertions.tsv](results/piCs_containing_P_insertions.xlsx)
+-   [piCs_containing_P_insertions.xlsx](results/piCs_containing_P_insertions.xlsx)
 
--   [piCs_containing_Spoink_insertions.tsv](results/piCs_containing_P_insertions.xlsx)
+-   [piCs_containing_Spoink_insertions.xlsx](results/piCs_containing_P_insertions.xlsx)
 
--   [piCs_containing_Shellder_insertions.tsv](results/piCs_containing_Shellder_insertions.xlsx)
+-   [piCs_containing_Shellder_insertions.xlsx](results/piCs_containing_Shellder_insertions.xlsx)
 
 
 [Back to Table of Contents](#table-of-contents)
