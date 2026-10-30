@@ -706,11 +706,11 @@ To visualise piRNA distribution across TE consensus sequences, strand-specific c
 
 **Scripts:**
 
-- [scripts/0.1_mapping_microRNA.sh](scripts/10.1_mapping_microRNA.sh)
+- [scripts/10.1_mapping_microRNA.sh](scripts/10.1_mapping_microRNA.sh)
 
 - [scripts/10.2_get_RPKM_TEs.py](scripts/10.2_get_RPKM_TEs.py)
 
-- [scripts/10.3_make_TE_bigwigs.sh](scripts/110.3_make_TE_bigwigs.sh)
+- [scripts/10.3_make_TE_bigwigs.sh](scripts/10.3_make_TE_bigwigs.sh)
 
 
 [Back to Table of Contents](#table-of-contents)
