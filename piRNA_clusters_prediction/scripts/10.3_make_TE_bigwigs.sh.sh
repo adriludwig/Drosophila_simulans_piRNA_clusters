@@ -57,6 +57,12 @@ for bam in "$BAM_DIR"/*.sorted.bam; do
 
   #bedGraphToBigWig "$plus_bg" "$CHROMSIZES" "$plus_bw"
   #bedGraphToBigWig "$minus_bg" "$CHROMSIZES" "$minus_bw"
+  
+echo "[DONE] $rep"
+done
+
+echo "[INFO] All replicates processed. bedGraphs in: $BEDDIR"
+
 
   
 
