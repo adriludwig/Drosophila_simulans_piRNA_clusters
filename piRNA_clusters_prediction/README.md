@@ -694,7 +694,7 @@ Ping-pong cycle signature is characterized by an enrichment of 10 nt overlaps be
 
     -   [all_replicates.pingpong_H_all.tsv](results/all_replicates.pingpong_H_all.tsv)
 
-    -   [all_replicates.pingpong_Z_all.tsv](results/all_replicates.pingpong_H_all.tsv)
+    -   [all_replicates.pingpong_Z_all.tsv](results/all_replicates.pingpong_Z_all.tsv)
 
 [Back to Table of Contents](#table-of-contents)
 
