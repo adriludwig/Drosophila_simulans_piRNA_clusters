@@ -151,7 +151,7 @@ Parsing results and getting RPKM
     done > all_samples_protrac_clusters.txt
     ```
 
-    ### 3.3 - Step 3
+### 3.3 - Step 3
 
 Merging piCs and eliminating those that do not intersect with TEs
 
