@@ -577,7 +577,7 @@ sort -k1,1 -k2,2n cat_final_lifted_to_intersect.bed >cat_final_lifted_to_interse
 
 During coordinate transfer, some regions overlapping genes were reintroduced into the dataset. Although gene filtering had already been applied per strain earlier in the pipeline (which is important for accurate statistics within strains), this step is required to remove any gene-overlapping regions that reappeared after coordinates transfer. Therefore, gene filtering was applied again.
 
-More info on how the reference GFF was filtered is here: [4.3.1- Eliminating gene regions from piC annotation]((#431---eliminating-lncrnas-and-tes-from-ref-gff))
+More info on how the reference GFF was filtered is here: [4.3.1 - Eliminating lncRNAs and TEs from REF GFF](#431---eliminating-lncrnas-and-tes-from-ref-gff)
 
 ```{bash eval = FALSE}
 #subtract genes
