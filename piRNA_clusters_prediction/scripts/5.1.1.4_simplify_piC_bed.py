@@ -3,6 +3,7 @@
 # coordinates transfered. A reference file is also created to recover the original information
 
 import os
+import glob
 
 # Process all *cleaned.bed files in the current directory
 bed_files = glob.glob("*cleaned.bed")
