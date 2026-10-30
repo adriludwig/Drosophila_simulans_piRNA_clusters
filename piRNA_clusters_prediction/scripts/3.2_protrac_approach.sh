@@ -42,7 +42,7 @@ for parent_dir in "${parent_dirs[@]}"; do
                     # Extract attributes
                     piRNA_cluster_no=$(echo "$attributes" | grep -oP "piRNA cluster no: \K[0-9]+")
                     directionality=$(echo "$attributes" | grep -oP "directionality: \K[^;]+")
-                    mapped_reads=$(echo "$attributes" | grep -oP "mapped sequence reads: \K[0-9\.]+" || echo "0")# These are normalized mapped read counts reported by proTRAC, such as CPM/RPM
+                    mapped_reads=$(echo "$attributes" | grep -oP "mapped sequence reads: \K[0-9\.]+" || echo "0") # These are normalized mapped read counts reported by proTRAC, such as CPM/RPM
                     fraction_1U=$(echo "$attributes" | grep -oP "fraction 1U reads: \K[0-9\.]+" || echo "0")
                     fraction_10A=$(echo "$attributes" | grep -oP "fraction 10A reads: \K[0-9\.]+" || echo "0")
                     fraction_piRNA=$(echo "$attributes" | grep -oP "fraction piRNA-sized reads: \K[0-9\.]+" || echo "0")
