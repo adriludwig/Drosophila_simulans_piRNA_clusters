@@ -99,7 +99,7 @@ This R script performs the filtering and final selection of candidate piRNA clus
 ## 3 - **proTRAC protocol**
 
 Filtered reads from each sample were mapped to their respective genome assemblies, allowing multi-mapping with [Bowtie](https://github.com/BenLangmead/bowtie) v1.3.1 (bowtie -n 1 -l 12 -a --best --strata -y --chunkmbs 1024 -S).
-Next, proTRAC_2.4.3 [(Rosenkranz & Zischler, 2012)](https://pmc.ncbi.nlm.nih.gov/articles/PMC3293768/) was run on sam files (-swsize 500 -swinger 100 -size 500 -1Tor10A 0.6 -min 23 -chitin 10 -pens 0.05 -pti).
+Next, proTRAC_2.4.3 [(Rosenkranz & Zischler, 2012)](https://pmc.ncbi.nlm.nih.gov/articles/PMC3293768/) was run on sam files (-swsize 500 -swincr 100 -clsize 500 -1Tor10A 0.6 -pimin 23 -clhitsn 10 -pdens 0.05 -pti).
 Clusters that did not map with TEs were removed.
 
 ### 3.1 - Step 1
