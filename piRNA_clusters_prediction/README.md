@@ -641,7 +641,7 @@ Output for all strains: [all_final_non_lifted_pics.bed](results/all_final_non_li
 
 We analysed the long-read sequencing data using [Sniffles2](https://github.com/fritzsedlazeck/Sniffles) to identify structural variants, followed by a pipeline to extract all insertion sequences and identify those that are P-element, Spoink and Shellder. The TSD sequences were also extracted.
 
-See [\*\*TE insertion detection from long reads](**%3Chttps://github.com/adriludwig/Drosophila_simulans_piRNA_clusters/tree/main/TE_insertion_detection_from_long_reads%3E**).\*\* 
+See [TE insertion detection from long reads](../TE_insertion_detection_from_long_reads)
 Later, we intersected the Sniffles insertions with the TE genome annotation to identify the assembled insertions. We also intersect the insertion coordinates with the piRNA cluster annotation. The results were reviewed and edited as needed. TE copies located within or near low-complexity regions introduced during assembly polishing (e.g., Racon and Medaka) were occasionally missed due to local sequence distortions and minor coordinate discrepancies. Only insertions confirmed by sniffles or by visual inspection in IGV were considered.
 
 ## 8.1 - Filtering and checking insertions
