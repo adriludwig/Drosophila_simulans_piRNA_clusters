@@ -10,7 +10,7 @@ Two approaches were used to predict piRNA clusters: a coverage-based approach an
 4. [Merge coverage-based and proTRAC piC annotations within strains](#4---merge-coverage-based-and-protrac-pic-annotations-within-strains)
 5. [Cross-strain comparison of piRNA clusters - coordinates transfer](#5---cross-strain-comparison-of-pirna-clusters---coordinates-transfer)
 6. [Intersecting piCs across Strains](#6---intersecting-pics-across-strains)
-7. [Getting final non-lifted piCs](#7---getting-final-non-lifted-piCs)
+7. [Getting final non-lifted piCs](#7---getting-final-non-lifted-pics)
 8. [P-element, Shellder and Spoink insertions into piRNA clusters](#8---p-element-shellder-and-spoink-insertions-into-pirna-clusters)
 9. [Ping-pong signature detection](#9---ping-pong-signature-detection)
 10. [Expression of TE-associated piRNAs](#10---expression-of-te-associated-pirnas)
@@ -106,7 +106,7 @@ Clusters that did not map with TEs were removed.
 
 Mapping filtered reads against the respective genome assemblies and running proTRAC.
 
-**Script:** [3.1_protrac_approach.sh](script/3.1_protrac_approach.sh)
+**Script:** [3.1_protrac_approach.sh](scripts/3.1_protrac_approach.sh)
 
 ##### Inputs:
 
@@ -124,7 +124,7 @@ Mapping filtered reads against the respective genome assemblies and running proT
 
 Parsing results and getting RPKM
 
-**Script:** [3.2_protrac_approach.sh](scrips/3.2_protrac_approach.sh)
+**Script:** [3.2_protrac_approach.sh](scripts/3.2_protrac_approach.sh)
 
 ##### Inputs:
 
@@ -577,7 +577,7 @@ sort -k1,1 -k2,2n cat_final_lifted_to_intersect.bed >cat_final_lifted_to_interse
 
 During coordinate transfer, some regions overlapping genes were reintroduced into the dataset. Although gene filtering had already been applied per strain earlier in the pipeline (which is important for accurate statistics within strains), this step is required to remove any gene-overlapping regions that reappeared after coordinates transfer. Therefore, gene filtering was applied again.
 
-More info on how the reference GFF was filtered is here: [4.3.1- Eliminating gene regions from piC annotation](#431---eliminating-gene-regions%20from-pic)
+More info on how the reference GFF was filtered is here: [4.3.1- Eliminating gene regions from piC annotation]((#431---eliminating-lncrnas-and-tes-from-ref-gff))
 
 ```{bash eval = FALSE}
 #subtract genes
@@ -662,7 +662,7 @@ Insertions in piRNA clusters with less than 5 reads of support (total) or less t
 
 -   [piCs_containing_P_insertions.xlsx](results/piCs_containing_P_insertions.xlsx)
 
--   [piCs_containing_Spoink_insertions.xlsx](results/piCs_containing_P_insertions.xlsx)
+-   [piCs_containing_Spoink_insertions.xlsx](results/piCs_containing_Spoink_insertions.xlsx)
 
 -   [piCs_containing_Shellder_insertions.xlsx](results/piCs_containing_Shellder_insertions.xlsx)
 
